@@ -8,19 +8,14 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 
 public class TripDataActor extends AbstractBehavior<TripDataActorRouter.Command> {
-    private final String tripDataActorId;
 
-    public interface Command {
-    }
-
-    private TripDataActor(ActorContext<TripDataActorRouter.Command> context, String tripDataActorId) {
+    private TripDataActor(ActorContext<TripDataActorRouter.Command> context) {
         super(context);
-        this.tripDataActorId = tripDataActorId;
-        context.getLog().info("TripDataActor {} started", tripDataActorId);
+        context.getLog().info("TripDataActor routee started");
     }
 
-    public static Behavior<TripDataActorRouter.Command> create(String tripDataActorId) {
-        return Behaviors.setup(context -> new TripDataActor(context, tripDataActorId));
+    public static Behavior<TripDataActorRouter.Command> create() {
+        return Behaviors.setup(TripDataActor::new);
     }
 
     @Override
@@ -31,7 +26,7 @@ public class TripDataActor extends AbstractBehavior<TripDataActorRouter.Command>
     }
 
     private Behavior<TripDataActorRouter.Command> onPostStop() {
-        getContext().getLog().info("TripDataActor {} stopped", tripDataActorId);
+        getContext().getLog().info("TripDataActor routee stopped");
         return Behaviors.stopped();
     }
 }

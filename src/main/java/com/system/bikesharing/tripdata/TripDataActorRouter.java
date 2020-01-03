@@ -3,13 +3,12 @@ package com.system.bikesharing.tripdata;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.PostStop;
-import akka.actor.typed.javadsl.AbstractBehavior;
-import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
-import akka.actor.typed.javadsl.Receive;
+import akka.actor.typed.SupervisorStrategy;
+import akka.actor.typed.javadsl.*;
 
 public class TripDataActorRouter extends AbstractBehavior<TripDataActorRouter.Command> {
     private final String tripDataActorRouterId;
+    private final ActorRef<Command> router;
 
     public interface Command {
     }
@@ -38,6 +37,7 @@ public class TripDataActorRouter extends AbstractBehavior<TripDataActorRouter.Co
         super(context);
         this.tripDataActorRouterId = tripDataActorRouterId;
         context.getLog().info("TripDataActorRouter {} started", tripDataActorRouterId);
+        this.router = createTripDataRouter();
     }
 
     public static Behavior<Command> create(String tripDataActorRouterId) {
@@ -49,6 +49,18 @@ public class TripDataActorRouter extends AbstractBehavior<TripDataActorRouter.Co
         return newReceiveBuilder()
                 .onSignal(PostStop.class, signal -> onPostStop())
                 .build();
+    }
+
+
+    private ActorRef<Command> createTripDataRouter() {
+        int poolSize = 4; //todo poolsize from config file
+        PoolRouter<Command> pool = Routers
+                .pool(
+                        poolSize,
+                        Behaviors.supervise(TripDataActor.create()).onFailure(SupervisorStrategy.restart()))
+                .withRoundRobinRouting();
+
+        return getContext().spawn(pool, "tripDataWorkerPool");
     }
 
     private Behavior<Command> onPostStop() {
