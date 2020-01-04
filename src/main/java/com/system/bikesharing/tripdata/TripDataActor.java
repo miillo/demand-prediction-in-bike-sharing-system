@@ -1,32 +1,31 @@
 package com.system.bikesharing.tripdata;
 
-import akka.actor.typed.Behavior;
-import akka.actor.typed.PostStop;
-import akka.actor.typed.javadsl.AbstractBehavior;
-import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
-import akka.actor.typed.javadsl.Receive;
+import akka.actor.AbstractActor;
+import akka.actor.Props;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 
-public class TripDataActor extends AbstractBehavior<TripDataActorRouter.Command> {
+public class TripDataActor extends AbstractActor {
+    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+    private final String tripDataActorId;
 
-    private TripDataActor(ActorContext<TripDataActorRouter.Command> context) {
-        super(context);
-        context.getLog().info("TripDataActor routee started");
+    private TripDataActor(String tripDataActorId) {
+        this.tripDataActorId = tripDataActorId;
+        log.info("TripDataActor {} created", tripDataActorId);
     }
 
-    public static Behavior<TripDataActorRouter.Command> create() {
-        return Behaviors.setup(TripDataActor::new);
+    static Props props(String tripDataActorId) {
+        return Props.create(TripDataActor.class, () -> new TripDataActor(tripDataActorId));
     }
 
     @Override
-    public Receive<TripDataActorRouter.Command> createReceive() {
-        return newReceiveBuilder()
-                .onSignal(PostStop.class, signal -> onPostStop())
-                .build();
+    public void preStart() throws Exception {
+        super.preStart();
     }
 
-    private Behavior<TripDataActorRouter.Command> onPostStop() {
-        getContext().getLog().info("TripDataActor routee stopped");
-        return Behaviors.stopped();
+    @Override
+    public Receive createReceive() {
+        return receiveBuilder()
+                .build();
     }
 }

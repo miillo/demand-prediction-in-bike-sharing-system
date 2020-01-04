@@ -1,29 +1,33 @@
 package com.system.bikesharing.tripdata;
 
-import akka.actor.typed.ActorRef;
-import akka.actor.typed.Behavior;
-import akka.actor.typed.PostStop;
-import akka.actor.typed.SupervisorStrategy;
-import akka.actor.typed.javadsl.*;
+import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
+import akka.actor.Props;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
+import akka.routing.ActorRefRoutee;
+import akka.routing.RoundRobinRoutingLogic;
+import akka.routing.Routee;
+import akka.routing.Router;
 
-public class TripDataActorRouter extends AbstractBehavior<TripDataActorRouter.Command> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class TripDataActorRouter extends AbstractActor {
+    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
     private final String tripDataActorRouterId;
-    private final ActorRef<Command> router;
+    private final Router router;
 
-    public interface Command {
-    }
 
-    public static final class DownloadTripData implements Command {
+    public static final class DownloadTripData {
         final long requestId;
-        final ActorRef<DownloadedTripData> replyTo;
 
-        public DownloadTripData(long requestId, ActorRef<DownloadedTripData> replyTo) {
+        public DownloadTripData(long requestId) {
             this.requestId = requestId;
-            this.replyTo = replyTo;
         }
     }
 
-    public static final class DownloadedTripData implements Command {
+    public static final class DownloadedTripData {
         final long requestId;
         final String tripData; //probably parsed JSON
 
@@ -33,38 +37,36 @@ public class TripDataActorRouter extends AbstractBehavior<TripDataActorRouter.Co
         }
     }
 
-    private TripDataActorRouter(ActorContext<Command> context, String tripDataActorRouterId) {
-        super(context);
+
+    public TripDataActorRouter(String tripDataActorRouterId) {
+        log.info("TripDataActorRouter {} created", tripDataActorRouterId);
         this.tripDataActorRouterId = tripDataActorRouterId;
-        context.getLog().info("TripDataActorRouter {} started", tripDataActorRouterId);
-        this.router = createTripDataRouter();
+        this.router = createRouter();
     }
 
-    public static Behavior<Command> create(String tripDataActorRouterId) {
-        return Behaviors.setup(context -> new TripDataActorRouter(context, tripDataActorRouterId));
+    static Props props(String tripDataActorRouterId) {
+        return Props.create(TripDataActorRouter.class, () -> new TripDataActorRouter(tripDataActorRouterId));
     }
 
     @Override
-    public Receive<Command> createReceive() {
-        return newReceiveBuilder()
-                .onSignal(PostStop.class, signal -> onPostStop())
+    public void preStart() throws Exception {
+        super.preStart();
+    }
+
+    @Override
+    public Receive createReceive() {
+        return receiveBuilder()
                 .build();
     }
 
-
-    private ActorRef<Command> createTripDataRouter() {
-        int poolSize = 4; //todo poolsize from config file
-        PoolRouter<Command> pool = Routers
-                .pool(
-                        poolSize,
-                        Behaviors.supervise(TripDataActor.create()).onFailure(SupervisorStrategy.restart()))
-                .withRoundRobinRouting();
-
-        return getContext().spawn(pool, "tripDataWorkerPool");
-    }
-
-    private Behavior<Command> onPostStop() {
-        getContext().getLog().info("TripDataActorRouter {} stopped", tripDataActorRouterId);
-        return Behaviors.stopped();
+    //todo number of routees should be read from config file
+    private Router createRouter() {
+        List<Routee> routees = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            ActorRef r = getContext().actorOf(Props.create(TripDataActor.class, String.valueOf(i)));
+            getContext().watch(r);
+            routees.add(new ActorRefRoutee(r));
+        }
+        return new Router(new RoundRobinRoutingLogic(), routees);
     }
 }

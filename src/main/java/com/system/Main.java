@@ -1,11 +1,19 @@
 package com.system;
 
-import akka.actor.typed.ActorSystem;
+
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import com.system.bikesharing.tripdata.TripDataActorRouter;
 
 public class Main {
     public static void main(String[] args) {
         //todo add reading application.info + global settings class
 
-        ActorSystem.create(SystemSupervisor.create(), "bike-sharing-system");
+        ActorSystem system = ActorSystem.create("BikesharingSystem");
+        ActorRef tripDataActorRouter = system
+                .actorOf(Props.create(TripDataActorRouter.class, "0"), "tripDataActorRouter");
+
+
     }
 }
