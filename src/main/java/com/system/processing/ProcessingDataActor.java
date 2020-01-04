@@ -5,15 +5,8 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import akka.routing.ActorRefRoutee;
-import akka.routing.RoundRobinRoutingLogic;
-import akka.routing.Routee;
-import akka.routing.Router;
-import com.system.bikesharing.tripdata.TripDataActor;
 import com.system.prediction.PredictionModelActor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class ProcessingDataActor extends AbstractActor {
@@ -24,7 +17,7 @@ public class ProcessingDataActor extends AbstractActor {
     public ProcessingDataActor(String processingDataActorId, Map<String, ActorRef> actorRefMap) {
         log.info("ProcessingDataActor {} created", processingDataActorId);
         this.processingDataActorId = processingDataActorId;
-        this.actorRefMap = createActorRefMap(actorRefMap);
+        this.actorRefMap = createChildActors(actorRefMap);
     }
 
     static Props props(String processingDataActorId, Map<String, ActorRef> actorRefMap) {
@@ -43,7 +36,13 @@ public class ProcessingDataActor extends AbstractActor {
                 .build();
     }
 
-    private Map<String, ActorRef> createActorRefMap(Map<String, ActorRef> actorRefMap) {
+    /**
+     * Creates child actors: PersistenceActor and PredictionModelActor
+     *
+     * @param actorRefMap map with actor references
+     * @return updated map with actor references
+     */
+    private Map<String, ActorRef> createChildActors(Map<String, ActorRef> actorRefMap) {
         ActorRef persistenceActor = getContext().actorOf(Props.create(PersistenceActor.class, "0"), "PersistenceActor");
         ActorRef predictionModelActor = getContext().actorOf(Props.create(PredictionModelActor.class, "0"), "PredictionModelActor");
         actorRefMap.put("persistenceActor", persistenceActor);

@@ -9,6 +9,7 @@ import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
 import akka.routing.Router;
+import com.system.settings.AppSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,10 +60,14 @@ public class TripDataActorRouter extends AbstractActor {
                 .build();
     }
 
-    //todo number of routees should be read from config file
+    /**
+     * Creates router
+     *
+     * @return router instance
+     */
     private Router createRouter() {
         List<Routee> routees = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < AppSettings.noOfTripDataActors; i++) {
             ActorRef r = getContext().actorOf(Props.create(TripDataActor.class, String.valueOf(i)));
             getContext().watch(r);
             routees.add(new ActorRefRoutee(r));
