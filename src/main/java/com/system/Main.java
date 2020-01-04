@@ -6,6 +6,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import com.system.bikesharing.stationdata.StationDataActorRouter;
 import com.system.bikesharing.tripdata.TripDataActorRouter;
+import com.system.weatherdata.WeatherGeoActorRouter;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,6 +17,8 @@ public class Main {
                 .actorOf(Props.create(TripDataActorRouter.class, "0"), "tripDataActorRouter");
         ActorRef stationDataActorRouter = system
                 .actorOf(Props.create(StationDataActorRouter.class, "0"), "stationDataActorRouter");
+        ActorRef weatherGeoActorRouter = system
+                .actorOf(Props.create(WeatherGeoActorRouter.class, "0"), "weatherGeoActorRouter");
 
     }
 }
