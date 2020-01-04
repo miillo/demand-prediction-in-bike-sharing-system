@@ -6,6 +6,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import com.system.bikesharing.stationdata.StationDataActorRouter;
 import com.system.bikesharing.tripdata.TripDataActorRouter;
+import com.system.http.ApplicationServer;
 import com.system.processing.ProcessingDataActor;
 import com.system.settings.AppSettings;
 import com.system.weatherdata.WeatherGeoActorRouter;
@@ -21,6 +22,7 @@ public class Main {
         Map<String, ActorRef> actorRefMap = createHighLevelActors(system);
         ActorRef processingDataActor = system
                 .actorOf(Props.create(ProcessingDataActor.class, "0", actorRefMap), "processingDataActor");
+        new ApplicationServer(system, processingDataActor);
     }
 
     /**
@@ -30,7 +32,6 @@ public class Main {
      * @return map with high level actors
      */
     private static Map<String, ActorRef> createHighLevelActors(ActorSystem system) {
-        Map<String, ActorRef> actorRefMap = new HashMap<>();
         ActorRef tripDataActorRouter = system
                 .actorOf(Props.create(TripDataActorRouter.class, "0"), "tripDataActorRouter");
         ActorRef stationDataActorRouter = system
