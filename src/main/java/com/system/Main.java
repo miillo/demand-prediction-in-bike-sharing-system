@@ -9,7 +9,7 @@ import com.system.bikesharing.tripdata.TripDataActorRouter;
 import com.system.http.ApplicationServer;
 import com.system.processing.ProcessingDataActor;
 import com.system.settings.AppSettings;
-import com.system.weatherdata.WeatherGeoActorRouter;
+import com.system.weatherdata.WeatherDataActorRouter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class Main {
         ActorRef stationDataActorRouter = system
                 .actorOf(Props.create(StationDataActorRouter.class, "0"), "stationDataActorRouter");
         ActorRef weatherGeoActorRouter = system
-                .actorOf(Props.create(WeatherGeoActorRouter.class, "0"), "weatherGeoActorRouter");
+                .actorOf(Props.create(WeatherDataActorRouter.class, "0"), "weatherGeoActorRouter");
 
         return new HashMap<String, ActorRef>() {{
             put("tripDataActorRouter", tripDataActorRouter);
