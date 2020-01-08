@@ -1,10 +1,8 @@
 package com.system.bikesharing.tripdata;
 
-import akka.actor.AbstractActor;
+import akka.actor.AbstractLoggingActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
 import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
@@ -14,33 +12,27 @@ import com.system.settings.AppSettings;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TripDataActorRouter extends AbstractActor {
-    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+public class TripDataActorRouter extends AbstractLoggingActor {
     private final String tripDataActorRouterId;
     private final Router router;
 
 
     public static final class DownloadTripData {
-        final long requestId;
-
-        public DownloadTripData(long requestId) {
-            this.requestId = requestId;
+        public DownloadTripData() {
         }
     }
 
     public static final class DownloadedTripData {
-        final long requestId;
-        final String tripData; //probably parsed JSON
+        final String[] tripData;
 
-        public DownloadedTripData(long requestId, String tripData) {
-            this.requestId = requestId;
+        public DownloadedTripData(String[] tripData) {
             this.tripData = tripData;
         }
     }
 
 
     public TripDataActorRouter(String tripDataActorRouterId) {
-        log.info("TripDataActorRouter {} created", tripDataActorRouterId);
+        log().info("TripDataActorRouter {} created", tripDataActorRouterId);
         this.tripDataActorRouterId = tripDataActorRouterId;
         this.router = createRouter();
     }

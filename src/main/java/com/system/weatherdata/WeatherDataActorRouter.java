@@ -1,10 +1,8 @@
 package com.system.weatherdata;
 
-import akka.actor.AbstractActor;
+import akka.actor.AbstractLoggingActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
 import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
@@ -14,9 +12,8 @@ import com.system.settings.AppSettings;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeatherGeoActorRouter extends AbstractActor {
-    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
-    private final String weatherGeoActorRouterId;
+public class WeatherDataActorRouter extends AbstractLoggingActor {
+    private final String weatherDataActorRouterId;
     private final Router router;
 
 
@@ -39,14 +36,14 @@ public class WeatherGeoActorRouter extends AbstractActor {
     }
 
 
-    public WeatherGeoActorRouter(String weatherGeoActorRouterId) {
-        log.info("WeatherGeoDataActorRouter {} created", weatherGeoActorRouterId);
-        this.weatherGeoActorRouterId = weatherGeoActorRouterId;
+    public WeatherDataActorRouter(String weatherActorRouterId) {
+        log().info("WeatherDataActorRouter {} created", weatherActorRouterId);
+        this.weatherDataActorRouterId = weatherActorRouterId;
         this.router = createRouter();
     }
 
-    static Props props(String weatherGeoActorRouterId) {
-        return Props.create(WeatherGeoActorRouter.class, () -> new WeatherGeoActorRouter(weatherGeoActorRouterId));
+    static Props props(String weatherActorRouterId) {
+        return Props.create(WeatherDataActorRouter.class, () -> new WeatherDataActorRouter(weatherActorRouterId));
     }
 
     @Override

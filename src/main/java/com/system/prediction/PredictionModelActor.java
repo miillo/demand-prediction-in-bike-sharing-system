@@ -1,17 +1,20 @@
 package com.system.prediction;
 
-import akka.actor.AbstractActor;
+import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import com.system.database.MongoConfig;
+import org.springframework.data.mongodb.core.MongoOperations;
 
-public class PredictionModelActor extends AbstractActor {
-    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+public class PredictionModelActor extends AbstractLoggingActor {
     private final String predictionModelActorId;
 
+    private final MongoOperations mongoOperations;
+
     public PredictionModelActor(String predictionModelActorId) {
-        log.info("PredictionModelActor {} created", predictionModelActorId);
+        log().info("PredictionModelActor {} created", predictionModelActorId);
         this.predictionModelActorId = predictionModelActorId;
+        MongoConfig config = new MongoConfig();
+        this.mongoOperations = config.mongoTemplate();
     }
 
     static Props props(String predictionModelActorId) {

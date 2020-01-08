@@ -1,17 +1,14 @@
 package com.system.bikesharing.stationdata;
 
-import akka.actor.AbstractActor;
+import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
 
-public class StationDataActor extends AbstractActor {
-    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+public class StationDataActor extends AbstractLoggingActor {
     private final String stationDataActorId;
 
     private StationDataActor(String stationDataActorId) {
         this.stationDataActorId = stationDataActorId;
-        log.info("StationDataActor {} created", stationDataActorId);
+        log().info("StationDataActor {} created", stationDataActorId);
     }
 
     static Props props(String stationDataActorId) {

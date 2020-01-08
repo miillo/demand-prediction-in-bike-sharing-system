@@ -1,10 +1,8 @@
 package com.system.bikesharing.stationdata;
 
-import akka.actor.AbstractActor;
+import akka.actor.AbstractLoggingActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
 import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
@@ -14,8 +12,7 @@ import com.system.settings.AppSettings;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StationDataActorRouter extends AbstractActor {
-    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+public class StationDataActorRouter extends AbstractLoggingActor {
     private final String stationDataActorRouterId;
     private final Router router;
 
@@ -40,7 +37,7 @@ public class StationDataActorRouter extends AbstractActor {
 
 
     public StationDataActorRouter(String stationDataActorRouterId) {
-        log.info("StationDataActorRouter {} created", stationDataActorRouterId);
+        log().info("StationDataActorRouter {} created", stationDataActorRouterId);
         this.stationDataActorRouterId = stationDataActorRouterId;
         this.router = createRouter();
     }

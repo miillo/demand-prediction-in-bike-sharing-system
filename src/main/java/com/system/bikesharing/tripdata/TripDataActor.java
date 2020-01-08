@@ -1,17 +1,14 @@
 package com.system.bikesharing.tripdata;
 
-import akka.actor.AbstractActor;
+import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
 
-public class TripDataActor extends AbstractActor {
-    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+public class TripDataActor extends AbstractLoggingActor {
     private final String tripDataActorId;
 
     private TripDataActor(String tripDataActorId) {
         this.tripDataActorId = tripDataActorId;
-        log.info("TripDataActor {} created", tripDataActorId);
+        log().info("TripDataActor {} created", tripDataActorId);
     }
 
     static Props props(String tripDataActorId) {

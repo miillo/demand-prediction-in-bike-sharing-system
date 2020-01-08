@@ -1,20 +1,20 @@
 package com.system.processing;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
+import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import com.system.database.MongoConfig;
+import org.springframework.data.mongodb.core.MongoOperations;
 
-import java.util.Map;
-
-public class PersistenceActor extends AbstractActor {
-    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+public class PersistenceActor extends AbstractLoggingActor {
     private final String persistenceActorId;
 
+    private final MongoOperations mongoOperations;
+
     public PersistenceActor(String persistenceActorId) {
-        log.info("PersistenceActor {} created", persistenceActorId);
+        log().info("PersistenceActor {} created", persistenceActorId);
         this.persistenceActorId = persistenceActorId;
+        MongoConfig config = new MongoConfig();
+        this.mongoOperations = config.mongoTemplate();
     }
 
     static Props props(String persistenceActorId) {

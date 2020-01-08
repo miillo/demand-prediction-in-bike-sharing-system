@@ -1,17 +1,14 @@
 package com.system.weatherdata;
 
-import akka.actor.AbstractActor;
+import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
 
-public class WeatherDataActor extends AbstractActor {
-    private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+public class WeatherDataActor extends AbstractLoggingActor {
     private final String weatherDataActorId;
 
     private WeatherDataActor(String weatherDataActorId) {
         this.weatherDataActorId = weatherDataActorId;
-        log.info("WeatherDataActor {} created", weatherDataActorId);
+        log().info("WeatherDataActor {} created", weatherDataActorId);
     }
 
     static Props props(String weatherDataActorId) {
