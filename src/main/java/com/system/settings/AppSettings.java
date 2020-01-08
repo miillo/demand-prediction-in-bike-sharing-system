@@ -12,6 +12,10 @@ public class AppSettings {
     public static String httpDomain;
     public static int httpPort;
 
+    public static String databaseName;
+    public static String databaseDomain;
+    public static int databasePort;
+
     /**
      * Reads configuration file
      */
@@ -23,5 +27,8 @@ public class AppSettings {
         noOfStationDataActors = conf.getInt("station-data.no-of-actors");
         httpDomain = conf.getString("http.domain");
         httpPort = conf.getInt("http.port");
+        databaseName = conf.getString("database.name");
+        databaseDomain = conf.getString("database.domain");
+        databasePort = conf.getInt("database.port");
     }
 }
