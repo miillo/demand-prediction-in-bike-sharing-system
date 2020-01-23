@@ -10,10 +10,12 @@ import akka.http.javadsl.Http;
 import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
+import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.server.AllDirectives;
 import akka.http.javadsl.server.Route;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
+import com.system.pojo.UserRequest;
 import com.system.settings.AppSettings;
 
 import java.util.concurrent.CompletionStage;
@@ -39,9 +41,15 @@ public class ApplicationServer extends AllDirectives {
      */
     private Route createRoute() {
         return concat(
-                path("hello", () ->
-                        get(() ->
-                                complete("hello"))));
+                path("request-pred", () ->
+                        post(() ->
+                                entity(Jackson.unmarshaller(UserRequest.class), this::handlePredictionRequest))
+                ));
+    }
+
+    private Route handlePredictionRequest(UserRequest userRequest) {
+        System.out.println("@ @ @ @@ @ @ @ @ @@ @@@@@");
+        return complete("OK");
     }
 
     /**

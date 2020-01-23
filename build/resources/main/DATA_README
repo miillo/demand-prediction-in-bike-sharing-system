@@ -1,0 +1,13 @@
+Explanation for test data:
+
+source of the data for trips: https://s3.amazonaws.com/tripdata/JC-201909-citibike-tripdata.csv.zip
+
+Based on that were created data for stations: stations_data.cvs
+Labels for stations data:
+- station_id
+- action date
+- type - 0 as departure, 1 as arrival
+- stations info (name, geo location)
+- bike_id
+- current count of available bike
+- initial count of available bike (changed daily at 5AM)
