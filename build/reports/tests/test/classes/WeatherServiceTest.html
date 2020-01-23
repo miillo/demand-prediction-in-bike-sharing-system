@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class WeatherServiceTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class WeatherServiceTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/default-package.html">default-package</a> &gt; WeatherServiceTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.702s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">weatherApiTest</td>
+<td class="success">0.702s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>17:48:06.711 [Test worker] DEBUG org.apache.http.client.protocol.RequestAddCookies - CookieSpec selected: default
+17:48:06.724 [Test worker] DEBUG org.apache.http.client.protocol.RequestAuthCache - Auth cache not set in the context
+17:48:06.725 [Test worker] DEBUG org.apache.http.impl.conn.PoolingHttpClientConnectionManager - Connection request: [route: {s}-&gt;https://api.meteostat.net:443][total available: 0; route allocated: 0 of 2; total allocated: 0 of 20]
+17:48:06.737 [Test worker] DEBUG org.apache.http.impl.conn.PoolingHttpClientConnectionManager - Connection leased: [id: 0][route: {s}-&gt;https://api.meteostat.net:443][total available: 0; route allocated: 1 of 2; total allocated: 1 of 20]
+17:48:06.739 [Test worker] DEBUG org.apache.http.impl.execchain.MainClientExec - Opening connection {s}-&gt;https://api.meteostat.net:443
+17:48:06.747 [Test worker] DEBUG org.apache.http.impl.conn.DefaultHttpClientConnectionOperator - Connecting to api.meteostat.net/85.214.113.7:443
+17:48:06.747 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory - Connecting socket to api.meteostat.net/85.214.113.7:443 with timeout 0
+17:48:06.815 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory - Enabled protocols: [TLSv1.3, TLSv1.2, TLSv1.1, TLSv1]
+17:48:06.815 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory - Enabled cipher suites:[TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384, TLS_DHE_RSA_WITH_AES_256_GCM_SHA384, TLS_DHE_DSS_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256, TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, TLS_DHE_DSS_WITH_AES_128_GCM_SHA256, TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384, TLS_RSA_WITH_AES_256_CBC_SHA256, TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384, TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384, TLS_DHE_RSA_WITH_AES_256_CBC_SHA256, TLS_DHE_DSS_WITH_AES_256_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, TLS_RSA_WITH_AES_256_CBC_SHA, TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA, TLS_ECDH_RSA_WITH_AES_256_CBC_SHA, TLS_DHE_RSA_WITH_AES_256_CBC_SHA, TLS_DHE_DSS_WITH_AES_256_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256, TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256, TLS_DHE_RSA_WITH_AES_128_CBC_SHA256, TLS_DHE_DSS_WITH_AES_128_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, TLS_RSA_WITH_AES_128_CBC_SHA, TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA, TLS_ECDH_RSA_WITH_AES_128_CBC_SHA, TLS_DHE_RSA_WITH_AES_128_CBC_SHA, TLS_DHE_DSS_WITH_AES_128_CBC_SHA, TLS_EMPTY_RENEGOTIATION_INFO_SCSV]
+17:48:06.815 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory - Starting handshake
+17:48:06.989 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory - Secure session established
+17:48:06.990 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory -  negotiated protocol: TLSv1.2
+17:48:06.990 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory -  negotiated cipher suite: TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+17:48:06.990 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory -  peer principal: CN=api.meteostat.net
+17:48:06.990 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory -  peer alternative names: [api.meteostat.net]
+17:48:06.990 [Test worker] DEBUG org.apache.http.conn.ssl.SSLConnectionSocketFactory -  issuer principal: CN=Let's Encrypt Authority X3, O=Let's Encrypt, C=US
+17:48:07.000 [Test worker] DEBUG org.apache.http.impl.conn.DefaultHttpClientConnectionOperator - Connection established 192.168.1.13:51795&lt;-&gt;85.214.113.7:443
+17:48:07.000 [Test worker] DEBUG org.apache.http.impl.execchain.MainClientExec - Executing request GET /v1/history/daily?station=72502&amp;start=2019-09-01&amp;end=2019-09-30&amp;key=GQ09iu1F HTTP/1.1
+17:48:07.000 [Test worker] DEBUG org.apache.http.impl.execchain.MainClientExec - Target auth state: UNCHALLENGED
+17:48:07.001 [Test worker] DEBUG org.apache.http.impl.execchain.MainClientExec - Proxy auth state: UNCHALLENGED
+17:48:07.003 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &gt;&gt; GET /v1/history/daily?station=72502&amp;start=2019-09-01&amp;end=2019-09-30&amp;key=GQ09iu1F HTTP/1.1
+17:48:07.003 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &gt;&gt; Host: api.meteostat.net
+17:48:07.003 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &gt;&gt; Connection: Keep-Alive
+17:48:07.003 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &gt;&gt; User-Agent: Apache-HttpClient/4.5.11 (Java/11.0.1)
+17:48:07.003 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &gt;&gt; Accept-Encoding: gzip,deflate
+17:48:07.003 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &gt;&gt; &quot;GET /v1/history/daily?station=72502&amp;start=2019-09-01&amp;end=2019-09-30&amp;key=GQ09iu1F HTTP/1.1[\r][\n]&quot;
+17:48:07.003 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &gt;&gt; &quot;Host: api.meteostat.net[\r][\n]&quot;
+17:48:07.003 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &gt;&gt; &quot;Connection: Keep-Alive[\r][\n]&quot;
+17:48:07.003 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &gt;&gt; &quot;User-Agent: Apache-HttpClient/4.5.11 (Java/11.0.1)[\r][\n]&quot;
+17:48:07.004 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &gt;&gt; &quot;Accept-Encoding: gzip,deflate[\r][\n]&quot;
+17:48:07.004 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &gt;&gt; &quot;[\r][\n]&quot;
+17:48:07.040 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;HTTP/1.1 200 OK[\r][\n]&quot;
+17:48:07.040 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;Date: Thu, 23 Jan 2020 16:48:07 GMT[\r][\n]&quot;
+17:48:07.040 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;Server: Apache[\r][\n]&quot;
+17:48:07.041 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;X-Powered-By: PHP/7.0.33[\r][\n]&quot;
+17:48:07.041 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;access-control-allow-origin: *[\r][\n]&quot;
+17:48:07.041 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;Vary: Accept-Encoding[\r][\n]&quot;
+17:48:07.041 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;Content-Encoding: gzip[\r][\n]&quot;
+17:48:07.041 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;Content-Length: 870[\r][\n]&quot;
+17:48:07.041 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;Keep-Alive: timeout=5, max=100[\r][\n]&quot;
+17:48:07.041 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;Connection: Keep-Alive[\r][\n]&quot;
+17:48:07.041 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;Content-Type: application/json[\r][\n]&quot;
+17:48:07.041 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;[\r][\n]&quot;
+17:48:07.044 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; HTTP/1.1 200 OK
+17:48:07.044 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; Date: Thu, 23 Jan 2020 16:48:07 GMT
+17:48:07.044 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; Server: Apache
+17:48:07.044 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; X-Powered-By: PHP/7.0.33
+17:48:07.044 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; access-control-allow-origin: *
+17:48:07.044 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; Vary: Accept-Encoding
+17:48:07.044 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; Content-Encoding: gzip
+17:48:07.045 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; Content-Length: 870
+17:48:07.045 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; Keep-Alive: timeout=5, max=100
+17:48:07.045 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; Connection: Keep-Alive
+17:48:07.045 [Test worker] DEBUG org.apache.http.headers - http-outgoing-0 &lt;&lt; Content-Type: application/json
+17:48:07.049 [Test worker] DEBUG org.apache.http.impl.execchain.MainClientExec - Connection can be kept alive for 5000 MILLISECONDS
+17:48:07.056 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;[0x1f][0x8b][0x8][0x0][0x0][0x0][0x0][0x0][0x0][0x3][0xc5][0x99]K[0x8b][0xdb]0[0x14][0x85][0xff]J[0xd0][0xda]5z[0xf8][0x99][0xdd]@[0xd7][0xed][0xb2][0x8b]R[0x8a][0x89][0xd5][0xc6]4q[0x8c][0x1f]L![0xe4][0xbf]Wr[0x13][0x98][0xf8][0x1e][0xf]V&quot;30[0x8b][0xb1][0xe3][0xc8][0xfe]r[0xee][0xe3]\[0xf9][0xcc][0x8e][0xba]/[0xd8][0xf6][0xcc][0xba][0xd3][0xd0][0xee]4[0xdb][0xb2]/E_[0x9d][0xea][0xe2][0xb0][0xf9][0xba][0xd3]E][0xed]6E]n^[0xfa][0xe3][0xa9]k[0xf6][0xba]5[0xc7]/[0xe5][0xb1][0xaa][0xab][0xae]o[0xc7][0xb][0x83][0xcd]g=[0xf4][0xdd][0xce]|[0xb6][0xf9][0xa6][0xfb]^[0xb7]e[0xa5][0xeb][0xae]g[0x97][0x80][0x95][0x85]][0xfb][0xfb][0xd9][0xfe]c[0x97][0x96]\[0xe4][0x9f][0xb8][0xf9][0x13],`[0xbd]&gt;6[0xda][0xac]1[0xb4][0xe6]#)[0xc2][0xf4][0xee][0xd4]Os[0xf][0xb6][0x15][0x9]9][0xfc]5W[0xc7][0x1]kZ[0xbd][0xab][0x9a][0xaa][0x1f][0x1f][0x82]m[0xeb][0xe1]p[0x8]XW[0x9f]^&#x7f;[0x15][0x87][0xc3][0xdb][0xe3]R7[0xfd][0xfe]v[0xe2][0xb5][0xaa][0xcb][0xb2]2_}[0xfb]-{[0xb2]k[0xb4].[0xcd][\r][0xe3]P[0x98][0xb5]u[0xf1][0xe7][0xf7]`[0x18]n[0xcb][0xc]u[0xb7][0xaf]j};6[0xf7][0xee][0xba][0xf1][0xb9][0x5][0x97][0xc9]%[0xa0][0x80][0x92][0x0][0xca]0[0x2][0x80][0x86][,[0x3]T&lt;[0x94]&gt;[0x0][0xb9]}[0x8e][0xe5][0x80][0xf6][0x18][0x1]*[0x2][0xa8]B[0x85][0x14][0xcc][0xc2][0x1c][0x1][0xa6]a[0xb6][0x9a][0x86]|\[0xdb]AC[0x13]f[0x11][0x82][0x8c][0x8]d[0x4]U[0x14]99m![0x95][0xb4][0x92][0xad][0x4][0x99][0xd8][0xdf][0xd5][0x9]R[0x85]0Tc[0x10][0xaa]P[0xc9]Q2[0xaa][0xa4][0x1a][0x1f][0xe4][0x1e][0x92][0xfb] [0x14]a[0xec]H[0x98]b[0xc2]dJh[0x82][0x12][0xca][0x18]#&gt;N[0xe8]2[0x9b][0xb3][0xae]|qvG'[0x95]#[0x9b][0x89]%[0xc4][0x96][0x2][0xb6]i[0xc2][0x8d]l[\n]&quot;
+17:48:07.057 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;[0xe7]a2[0xd6];[0x1f]![0xaa]Dt[0xaf][0x9f]Q[0xc3]G[0xa5][0xc9]@[0xaf][0x90][0x8b][0xd5][0x1b][0x1b][0xc8][0x1a][0xd1][0xf9]H[0x91][0x89][0x11]_[0xe][0xf8][0xa0][0x82]3[0xf9][0x17][0x8f]?[0xf3][\n]&quot;
+17:48:07.057 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;[0x84][0x8e][0x11]*[0x15][0xa0][0x13]|au[0xb1]i[0xb6][0x8c][0xcd]_[0x97]pj[0x84][0xb6][0xd3][0x87][0x2]!R3[0x13][0x11][0xa5]f[0x11]M[0x8f][0xa0][0x8d][0xf0][0x1][0xf9][0xa4][0x12][0xf7]x[0xd9][0x18][0xf8].x[0x1c]6AA[0xad]L[0x8c][0xbd]ZJ[0xd2][0xf2][0xda][0xe9]i[0x13]|[0xa0]~R[0x1]][0xf3]/[0xc3]|[0xc4][0xc9][0x98][0xb]a}[0x99][0xa9][0xa0][0xc2]O[0x85][0xc9][0xf8][0xb4]z[0xba][0xe6]_[0xe][0xeb][0x8b][0xa0]&amp;[0x86][0xe3][0xfa][0x92][0x91][0xc4][0x9c][0xb1][0xa2]^[0xaa][0xcb]&#x7f;o[0xe4][0xc2][0x7][0xe9][0xa8]{[0x89][0xb0]z[0xd8][0xa2][0xc9]l-[0xf7][0xe2][0xdc][0x1f]$G|[0xc4][0xbb][0x18][0xbf]5[0x9d][0x18][0xde][0xe3]C[0xfd][0xcf]S[0x5]M\G%[![0x10]#[0xf1]0&amp;[0xa7][0x96][0xfb]3[0xe4]`[0xbc]([0x18];[0xfb][0xcf][0x1c][0xfa]OA[0x1c][0xc]h[0xe5][0xd7][\n]&quot;
+17:48:07.057 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;[0x3]3[0xd0]S[0x85][0xf1]1[0xec]*\C[0x89][0x87][0x11][0x9][0x8c][0xd2][0x99] Es[0x92][0xa7][0x11][0xc2][0xb5][0xc8]$PBIl[0xcc][0x9c][0x84][0xd0][0xc6]x2[0xa1]2J[0xa7]x[0x8e]3[0xa0][0xd1][0xf]UQ[0x89][0xf6]c[0x12][0x84]'[0xa1][0x7]UtF[0xf2]!_[0xec]\B[0xf1][0x90]$[0xa9][0x85]Q3#[0x4][0xa1][0x1e][0xf1]VK@g[0x1][0x5]n[0xf2][0x92]n[0xc7]$[0xd8]f[0xe3][0xfd]&amp;[0x85][0x86]xaWp[0x8e]Q[0x91]?[0xe7][0xd2][0x90][0xc5][0x96][0xd4][0xc3]([0xdc]!f&lt;[0xa8][0xbf])W[0xe6][0xf2]I[0x9f][0xcd]s8FH[0xea]d8[0xce]A[0xba][0x7]5[0xeb][0xb3]?h[0xd2][0x15][0xb0]KH[0xea]e8.[0xa2][0xa8][0xcf][0x83][0x1a][0xe3]k[0x12]T[0xf]H[0x98]#@[0xba][0x19]C[0x1b][0xde]{[0x12][0xae]eer[0xd7]Q[0xd7]D5l[0x83]h/[0x6]+[0x88][0xb][0xe9]:}[0xc2]}[0x96][0xb0]Y[0x8b][0xf8][0xe8]^[0xcc][0xcc][0x86][0xef][0xcc]^[0x8c][0xa7][0x1c][0x14]vw[0xf0][0x89]&quot;j_6[0x0]&lt;E]L[0x16]Ns[0xed][0xfa][0xda][0x5][0xbe][0x95][0x10]~[0xe2]3[0x9b][0x94][0xd0][0xc8][0xb9][0xcf][0x1b]k~[0xf9]q[0xf9][0x7]&quot;
+17:48:07.058 [Test worker] DEBUG org.apache.http.wire - http-outgoing-0 &lt;&lt; &quot;[0xf9][0xc5]o[0xee][0xbd][0x1a][0x0][0x0]&quot;
+17:48:07.059 [Test worker] DEBUG org.apache.http.impl.conn.PoolingHttpClientConnectionManager - Connection [id: 0][route: {s}-&gt;https://api.meteostat.net:443] can be kept alive for 5.0 seconds
+17:48:07.059 [Test worker] DEBUG org.apache.http.impl.conn.DefaultManagedHttpClientConnection - http-outgoing-0: set socket timeout to 0
+17:48:07.060 [Test worker] DEBUG org.apache.http.impl.conn.PoolingHttpClientConnectionManager - Connection released: [id: 0][route: {s}-&gt;https://api.meteostat.net:443][total available: 1; route allocated: 1 of 2; total allocated: 1 of 20]
+{&quot;meta&quot;:{&quot;source&quot;:&quot;National Oceanic and Atmospheric Administration, Deutscher Wetterdienst&quot;},&quot;data&quot;:[{&quot;date&quot;:&quot;2019-09-01&quot;,&quot;temperature&quot;:21.7,&quot;temperature_min&quot;:16.7,&quot;temperature_max&quot;:25,&quot;precipitation&quot;:null,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:15.1,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1026},{&quot;date&quot;:&quot;2019-09-02&quot;,&quot;temperature&quot;:22.4,&quot;temperature_min&quot;:21.1,&quot;temperature_max&quot;:25,&quot;precipitation&quot;:30.2,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:10.4,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:null},{&quot;date&quot;:&quot;2019-09-03&quot;,&quot;temperature&quot;:23.3,&quot;temperature_min&quot;:18.9,&quot;temperature_max&quot;:27.8,&quot;precipitation&quot;:null,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:10.8,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1016.4},{&quot;date&quot;:&quot;2019-09-04&quot;,&quot;temperature&quot;:24.4,&quot;temperature_min&quot;:19.4,&quot;temperature_max&quot;:32.2,&quot;precipitation&quot;:null,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:16.9,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1013.6},{&quot;date&quot;:&quot;2019-09-05&quot;,&quot;temperature&quot;:22.3,&quot;temperature_min&quot;:17.8,&quot;temperature_max&quot;:23.9,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:11.5,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1017.6},{&quot;date&quot;:&quot;2019-09-06&quot;,&quot;temperature&quot;:18.4,&quot;temperature_min&quot;:15,&quot;temperature_max&quot;:20,&quot;precipitation&quot;:8.1,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:58,&quot;windspeed&quot;:23,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1012.2},{&quot;date&quot;:&quot;2019-09-07&quot;,&quot;temperature&quot;:18.9,&quot;temperature_min&quot;:13.9,&quot;temperature_max&quot;:26.1,&quot;precipitation&quot;:null,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:314,&quot;windspeed&quot;:17.6,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:null},{&quot;date&quot;:&quot;2019-09-08&quot;,&quot;temperature&quot;:21.2,&quot;temperature_min&quot;:15,&quot;temperature_max&quot;:26.7,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:10.8,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1016.5},{&quot;date&quot;:&quot;2019-09-09&quot;,&quot;temperature&quot;:21.9,&quot;temperature_min&quot;:17.8,&quot;temperature_max&quot;:25.6,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:13,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1023},{&quot;date&quot;:&quot;2019-09-10&quot;,&quot;temperature&quot;:22.3,&quot;temperature_min&quot;:20,&quot;temperature_max&quot;:25.6,&quot;precipitation&quot;:null,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:10.4,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1026.1},{&quot;date&quot;:&quot;2019-09-11&quot;,&quot;temperature&quot;:24.8,&quot;temperature_min&quot;:20,&quot;temperature_max&quot;:32.8,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:231,&quot;windspeed&quot;:18.7,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1020.4},{&quot;date&quot;:&quot;2019-09-12&quot;,&quot;temperature&quot;:25.7,&quot;temperature_min&quot;:17.2,&quot;temperature_max&quot;:27.2,&quot;precipitation&quot;:1,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:18,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1018.4},{&quot;date&quot;:&quot;2019-09-13&quot;,&quot;temperature&quot;:18.2,&quot;temperature_min&quot;:13.9,&quot;temperature_max&quot;:21.7,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:80,&quot;windspeed&quot;:17.3,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1029.5},{&quot;date&quot;:&quot;2019-09-14&quot;,&quot;temperature&quot;:20.9,&quot;temperature_min&quot;:18.3,&quot;temperature_max&quot;:25,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:12.2,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1025},{&quot;date&quot;:&quot;2019-09-15&quot;,&quot;temperature&quot;:24.2,&quot;temperature_min&quot;:19.4,&quot;temperature_max&quot;:28.9,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:10.8,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1020},{&quot;date&quot;:&quot;2019-09-16&quot;,&quot;temperature&quot;:23.1,&quot;temperature_min&quot;:19.4,&quot;temperature_max&quot;:26.7,&quot;precipitation&quot;:null,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:6.1,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1017.2},{&quot;date&quot;:&quot;2019-09-17&quot;,&quot;temperature&quot;:21.4,&quot;temperature_min&quot;:15,&quot;temperature_max&quot;:26.1,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:15.5,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1019.6},{&quot;date&quot;:&quot;2019-09-18&quot;,&quot;temperature&quot;:17.8,&quot;temperature_min&quot;:13.3,&quot;temperature_max&quot;:21.7,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:15.1,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1023.4},{&quot;date&quot;:&quot;2019-09-19&quot;,&quot;temperature&quot;:16.1,&quot;temperature_min&quot;:9.4,&quot;temperature_max&quot;:22.2,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:11.2,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1026.6},{&quot;date&quot;:&quot;2019-09-20&quot;,&quot;temperature&quot;:17.8,&quot;temperature_min&quot;:10,&quot;temperature_max&quot;:26.7,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:247,&quot;windspeed&quot;:11.9,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1023.5},{&quot;date&quot;:&quot;2019-09-21&quot;,&quot;temperature&quot;:21.6,&quot;temperature_min&quot;:12.8,&quot;temperature_max&quot;:30,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:5.8,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1022.2},{&quot;date&quot;:&quot;2019-09-22&quot;,&quot;temperature&quot;:23.2,&quot;temperature_min&quot;:15.6,&quot;temperature_max&quot;:31.7,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:11.9,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1019.5},{&quot;date&quot;:&quot;2019-09-23&quot;,&quot;temperature&quot;:26.3,&quot;temperature_min&quot;:21.1,&quot;temperature_max&quot;:33.9,&quot;precipitation&quot;:1.3,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:219,&quot;windspeed&quot;:18,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1011},{&quot;date&quot;:&quot;2019-09-24&quot;,&quot;temperature&quot;:23.4,&quot;temperature_min&quot;:17.2,&quot;temperature_max&quot;:26.1,&quot;precipitation&quot;:null,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:292,&quot;windspeed&quot;:18.7,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1009.1},{&quot;date&quot;:&quot;2019-09-25&quot;,&quot;temperature&quot;:20.6,&quot;temperature_min&quot;:14.4,&quot;temperature_max&quot;:27.2,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:10.8,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1011.4},{&quot;date&quot;:&quot;2019-09-26&quot;,&quot;temperature&quot;:20.8,&quot;temperature_min&quot;:15,&quot;temperature_max&quot;:30,&quot;precipitation&quot;:null,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:13.7,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1009.9},{&quot;date&quot;:&quot;2019-09-27&quot;,&quot;temperature&quot;:19.4,&quot;temperature_min&quot;:14.4,&quot;temperature_max&quot;:26.1,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:9.4,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1018.6},{&quot;date&quot;:&quot;2019-09-28&quot;,&quot;temperature&quot;:21.8,&quot;temperature_min&quot;:15.6,&quot;temperature_max&quot;:30,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:null,&quot;windspeed&quot;:12.2,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1018.7},{&quot;date&quot;:&quot;2019-09-29&quot;,&quot;temperature&quot;:24.4,&quot;temperature_min&quot;:17.8,&quot;temperature_max&quot;:27.2,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:123,&quot;windspeed&quot;:18,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1022.4},{&quot;date&quot;:&quot;2019-09-30&quot;,&quot;temperature&quot;:18.5,&quot;temperature_min&quot;:16.1,&quot;temperature_max&quot;:21.1,&quot;precipitation&quot;:0,&quot;snowfall&quot;:null,&quot;snowdepth&quot;:null,&quot;winddirection&quot;:82,&quot;windspeed&quot;:14.8,&quot;peakgust&quot;:null,&quot;sunshine&quot;:null,&quot;pressure&quot;:1025.5}]}
+WeatherAPI{meta=Meta{source='National Oceanic and Atmospheric Administration, Deutscher Wetterdienst'}, weathersByDay=[Weather{, date='2019-09-01', temperature=21.7, temperatureMin=16.7, temperatureMax=25.0, precipitation=null, snowfall=null, snowdepth=null, winddirection=null, windspeed=15.1, peakgust=null, sunshine=null, pressure=1026.0}, Weather{, date='2019-09-02', temperature=22.4, temperatureMin=21.1, temperatureMax=25.0, precipitation=30.2, snowfall=null, snowdepth=null, winddirection=null, windspeed=10.4, peakgust=null, sunshine=null, pressure=null}, Weather{, date='2019-09-03', temperature=23.3, temperatureMin=18.9, temperatureMax=27.8, precipitation=null, snowfall=null, snowdepth=null, winddirection=null, windspeed=10.8, peakgust=null, sunshine=null, pressure=1016.4}, Weather{, date='2019-09-04', temperature=24.4, temperatureMin=19.4, temperatureMax=32.2, precipitation=null, snowfall=null, snowdepth=null, winddirection=null, windspeed=16.9, peakgust=null, sunshine=null, pressure=1013.6}, Weather{, date='2019-09-05', temperature=22.3, temperatureMin=17.8, temperatureMax=23.9, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=11.5, peakgust=null, sunshine=null, pressure=1017.6}, Weather{, date='2019-09-06', temperature=18.4, temperatureMin=15.0, temperatureMax=20.0, precipitation=8.1, snowfall=null, snowdepth=null, winddirection=58.0, windspeed=23.0, peakgust=null, sunshine=null, pressure=1012.2}, Weather{, date='2019-09-07', temperature=18.9, temperatureMin=13.9, temperatureMax=26.1, precipitation=null, snowfall=null, snowdepth=null, winddirection=314.0, windspeed=17.6, peakgust=null, sunshine=null, pressure=null}, Weather{, date='2019-09-08', temperature=21.2, temperatureMin=15.0, temperatureMax=26.7, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=10.8, peakgust=null, sunshine=null, pressure=1016.5}, Weather{, date='2019-09-09', temperature=21.9, temperatureMin=17.8, temperatureMax=25.6, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=13.0, peakgust=null, sunshine=null, pressure=1023.0}, Weather{, date='2019-09-10', temperature=22.3, temperatureMin=20.0, temperatureMax=25.6, precipitation=null, snowfall=null, snowdepth=null, winddirection=null, windspeed=10.4, peakgust=null, sunshine=null, pressure=1026.1}, Weather{, date='2019-09-11', temperature=24.8, temperatureMin=20.0, temperatureMax=32.8, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=231.0, windspeed=18.7, peakgust=null, sunshine=null, pressure=1020.4}, Weather{, date='2019-09-12', temperature=25.7, temperatureMin=17.2, temperatureMax=27.2, precipitation=1.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=18.0, peakgust=null, sunshine=null, pressure=1018.4}, Weather{, date='2019-09-13', temperature=18.2, temperatureMin=13.9, temperatureMax=21.7, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=80.0, windspeed=17.3, peakgust=null, sunshine=null, pressure=1029.5}, Weather{, date='2019-09-14', temperature=20.9, temperatureMin=18.3, temperatureMax=25.0, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=12.2, peakgust=null, sunshine=null, pressure=1025.0}, Weather{, date='2019-09-15', temperature=24.2, temperatureMin=19.4, temperatureMax=28.9, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=10.8, peakgust=null, sunshine=null, pressure=1020.0}, Weather{, date='2019-09-16', temperature=23.1, temperatureMin=19.4, temperatureMax=26.7, precipitation=null, snowfall=null, snowdepth=null, winddirection=null, windspeed=6.1, peakgust=null, sunshine=null, pressure=1017.2}, Weather{, date='2019-09-17', temperature=21.4, temperatureMin=15.0, temperatureMax=26.1, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=15.5, peakgust=null, sunshine=null, pressure=1019.6}, Weather{, date='2019-09-18', temperature=17.8, temperatureMin=13.3, temperatureMax=21.7, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=15.1, peakgust=null, sunshine=null, pressure=1023.4}, Weather{, date='2019-09-19', temperature=16.1, temperatureMin=9.4, temperatureMax=22.2, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=11.2, peakgust=null, sunshine=null, pressure=1026.6}, Weather{, date='2019-09-20', temperature=17.8, temperatureMin=10.0, temperatureMax=26.7, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=247.0, windspeed=11.9, peakgust=null, sunshine=null, pressure=1023.5}, Weather{, date='2019-09-21', temperature=21.6, temperatureMin=12.8, temperatureMax=30.0, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=5.8, peakgust=null, sunshine=null, pressure=1022.2}, Weather{, date='2019-09-22', temperature=23.2, temperatureMin=15.6, temperatureMax=31.7, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=11.9, peakgust=null, sunshine=null, pressure=1019.5}, Weather{, date='2019-09-23', temperature=26.3, temperatureMin=21.1, temperatureMax=33.9, precipitation=1.3, snowfall=null, snowdepth=null, winddirection=219.0, windspeed=18.0, peakgust=null, sunshine=null, pressure=1011.0}, Weather{, date='2019-09-24', temperature=23.4, temperatureMin=17.2, temperatureMax=26.1, precipitation=null, snowfall=null, snowdepth=null, winddirection=292.0, windspeed=18.7, peakgust=null, sunshine=null, pressure=1009.1}, Weather{, date='2019-09-25', temperature=20.6, temperatureMin=14.4, temperatureMax=27.2, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=10.8, peakgust=null, sunshine=null, pressure=1011.4}, Weather{, date='2019-09-26', temperature=20.8, temperatureMin=15.0, temperatureMax=30.0, precipitation=null, snowfall=null, snowdepth=null, winddirection=null, windspeed=13.7, peakgust=null, sunshine=null, pressure=1009.9}, Weather{, date='2019-09-27', temperature=19.4, temperatureMin=14.4, temperatureMax=26.1, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=9.4, peakgust=null, sunshine=null, pressure=1018.6}, Weather{, date='2019-09-28', temperature=21.8, temperatureMin=15.6, temperatureMax=30.0, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=null, windspeed=12.2, peakgust=null, sunshine=null, pressure=1018.7}, Weather{, date='2019-09-29', temperature=24.4, temperatureMin=17.8, temperatureMax=27.2, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=123.0, windspeed=18.0, peakgust=null, sunshine=null, pressure=1022.4}, Weather{, date='2019-09-30', temperature=18.5, temperatureMin=16.1, temperatureMax=21.1, precipitation=0.0, snowfall=null, snowdepth=null, winddirection=82.0, windspeed=14.8, peakgust=null, sunshine=null, pressure=1025.5}]}
+17:48:07.087 [Test worker] DEBUG org.apache.http.impl.conn.PoolingHttpClientConnectionManager - Connection manager is shutting down
+17:48:07.088 [Test worker] DEBUG org.apache.http.impl.conn.DefaultManagedHttpClientConnection - http-outgoing-0: Close connection
+17:48:07.091 [Test worker] DEBUG org.apache.http.impl.conn.PoolingHttpClientConnectionManager - Connection manager shut down
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 5.2.1</a> at 23 sty 2020, 17:48:07</p>
+</div>
+</div>
+</body>
+</html>

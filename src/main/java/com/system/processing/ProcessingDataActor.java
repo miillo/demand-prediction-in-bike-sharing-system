@@ -40,7 +40,7 @@ public class ProcessingDataActor extends AbstractLoggingActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(HandleUserRequest.class, userRequest -> {
-                    //todo wysylanie requestow o dane
+                    //todo wysylanie requestow o dane stacji / tras / geo
                 })
                 .build();
     }

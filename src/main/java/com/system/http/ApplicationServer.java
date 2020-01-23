@@ -49,13 +49,17 @@ public class ApplicationServer extends AllDirectives {
     }
 
     /**
-     * Handles prediction request from user
+     * Handles prediction request from user. Message structure:
+     * {
+     *     "station-id": "XXXXX"            todo ewentualnie trzeba zrobic liste dostepnych ids
+     *     "start-date": "yyyy-mm-dd"
+     *     "end-date": "yyyy-mm-dd"
+     * }
      *
      * @param userRequest user request
      * @return message
      */
     private Route handlePredictionRequest(UserRequest userRequest) {
-        System.out.println(log);
         log.info("Application has received user request: " + userRequest.toString());
         processingDataActor.tell(new ProcessingDataActor.HandleUserRequest(userRequest), ActorRef.noSender());
         return complete("Thank you for request");
