@@ -12,4 +12,12 @@ public class UserRequest {
         this.startDate = startDate;
         this.endDate = endDate;
     }
+
+    @Override
+    public String toString() {
+        return "UserRequest{" +
+                "startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                '}';
+    }
 }

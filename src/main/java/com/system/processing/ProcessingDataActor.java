@@ -3,6 +3,7 @@ package com.system.processing;
 import akka.actor.AbstractLoggingActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import com.system.pojo.UserRequest;
 import com.system.prediction.PredictionModelActor;
 
 import java.util.Map;
@@ -22,6 +23,14 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                 new ProcessingDataActor(processingDataActorId, actorRefMap));
     }
 
+    public static final class HandleUserRequest {
+        final UserRequest userRequest;
+
+        public HandleUserRequest(UserRequest userRequest) {
+            this.userRequest = userRequest;
+        }
+    }
+
     @Override
     public void preStart() throws Exception {
         super.preStart();
@@ -30,6 +39,9 @@ public class ProcessingDataActor extends AbstractLoggingActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
+                .match(HandleUserRequest.class, userRequest -> {
+                    //todo wysylanie requestow o dane
+                })
                 .build();
     }
 

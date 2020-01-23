@@ -16,6 +16,7 @@ import akka.http.javadsl.server.Route;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import com.system.pojo.UserRequest;
+import com.system.processing.ProcessingDataActor;
 import com.system.settings.AppSettings;
 
 import java.util.concurrent.CompletionStage;
@@ -47,9 +48,17 @@ public class ApplicationServer extends AllDirectives {
                 ));
     }
 
+    /**
+     * Handles prediction request from user
+     *
+     * @param userRequest user request
+     * @return message
+     */
     private Route handlePredictionRequest(UserRequest userRequest) {
-        System.out.println("@ @ @ @@ @ @ @ @ @@ @@@@@");
-        return complete("OK");
+        System.out.println(log);
+        log.info("Application has received user request: " + userRequest.toString());
+        processingDataActor.tell(new ProcessingDataActor.HandleUserRequest(userRequest), ActorRef.noSender());
+        return complete("Thank you for request");
     }
 
     /**
@@ -62,7 +71,7 @@ public class ApplicationServer extends AllDirectives {
         Http http = Http.get(actorSystem);
         ActorMaterializer actorMaterializer = ActorMaterializer.create(actorSystem);
         ApplicationServer app = new ApplicationServer();
-        Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = app.createRoute().flow(actorSystem, actorMaterializer);
+        Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = this.createRoute().flow(actorSystem, actorMaterializer);
         return http.bindAndHandle(routeFlow, ConnectHttp.toHost(AppSettings.httpDomain, AppSettings.httpPort), actorMaterializer);
     }
 
