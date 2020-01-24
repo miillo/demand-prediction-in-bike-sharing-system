@@ -7,6 +7,10 @@ import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
 import akka.routing.Router;
+import com.system.pojo.Station;
+import com.system.pojo.UserRequest;
+import com.system.pojo.weather.WeatherAPI;
+import com.system.processing.ProcessingDataActor;
 import com.system.settings.AppSettings;
 
 import java.util.ArrayList;
@@ -16,22 +20,19 @@ public class StationDataActorRouter extends AbstractLoggingActor {
     private final String stationDataActorRouterId;
     private final Router router;
 
+    public static final class DownloadStationsData {
+        public final UserRequest userRequest;
 
-    public static final class DownloadStationData {
-        final long requestId;
-
-        public DownloadStationData(long requestId) {
-            this.requestId = requestId;
+        public DownloadStationsData(UserRequest userRequest) {
+            this.userRequest = userRequest;
         }
     }
 
-    public static final class DownloadedStationData {
-        final long requestId;
-        final String stationData; //probably parsed JSON
+    public static final class DownloadedStationsData {
+        public final List<Station> stations;
 
-        public DownloadedStationData(long requestId, String stationData) {
-            this.requestId = requestId;
-            this.stationData = stationData;
+        public DownloadedStationsData(List<Station> stations) {
+            this.stations = stations;
         }
     }
 
@@ -54,6 +55,14 @@ public class StationDataActorRouter extends AbstractLoggingActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
+                .match(DownloadStationsData.class, msg -> {
+                    router.route(new StationDataActor.DownloadStationsData(msg.userRequest), self());
+                })
+                .match(DownloadedStationsData.class, msg -> {
+                    if (msg.stations != null) {
+                        getContext().getParent().tell(new ProcessingDataActor.StationsData(msg.stations),self());
+                    }
+                })
                 .build();
     }
 

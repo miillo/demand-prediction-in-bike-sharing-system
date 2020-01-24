@@ -5,6 +5,7 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import com.system.bikesharing.stationdata.StationDataActorRouter;
 import com.system.bikesharing.tripdata.TripDataActorRouter;
+import com.system.pojo.Station;
 import com.system.pojo.UserRequest;
 import com.system.pojo.weather.Weather;
 import com.system.pojo.weather.WeatherAPI;
@@ -12,6 +13,7 @@ import com.system.prediction.PredictionModelActor;
 import com.system.weatherdata.WeatherDataActorRouter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProcessingDataActor extends AbstractLoggingActor {
@@ -45,6 +47,14 @@ public class ProcessingDataActor extends AbstractLoggingActor {
         }
     }
 
+    public static final class StationsData {
+        public final List<Station> stations;
+
+        public StationsData(List<Station> stations) {
+            this.stations = stations;
+        }
+    }
+
     @Override
     public void preStart() throws Exception {
         super.preStart();
@@ -55,11 +65,18 @@ public class ProcessingDataActor extends AbstractLoggingActor {
         return receiveBuilder()
                 .match(HandleUserRequest.class, msg -> {
                     //todo wysylanie requestow o dane stacji / tras / geo
-                    actorRefMap.get("weatherGeoActorRouter").tell(new WeatherDataActorRouter.DownloadWeatherData(msg.userRequest), getSelf());
+//                    actorRefMap.get("weatherGeoActorRouter").tell(new WeatherDataActorRouter.DownloadWeatherData(msg.userRequest), getSelf());
+                    actorRefMap.get("stationDataActorRouter").tell(new StationDataActorRouter.DownloadStationsData(msg.userRequest), getSelf());
                 })
                 .match(WeatherApiData.class, msg -> {
+                    //todo save and check if rest was computed
                     System.out.println("ProcessingDataActor received Weather API data");
                     System.out.println(msg.weatherAPI);
+                })
+                .match(StationsData.class, msg -> {
+                    //todo save and check if rest was computed
+                    System.out.println("ProcessingDataActor received Stations data");
+                    System.out.println(msg.stations);
                 })
                 .build();
     }

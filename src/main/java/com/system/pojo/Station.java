@@ -1,25 +1,37 @@
 package com.system.pojo;
 
+import com.opencsv.bean.CsvBindByName;
+import jdk.vm.ci.meta.Local;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 public final class Station {
 
+    @CsvBindByName(column = "station id")
     private int id;
 
-    private DateTime actionTime;
+    @CsvBindByName(column = "time")
+    private String actionTime;
 
+    @CsvBindByName(column = "type")
     private int type;
 
+    @CsvBindByName(column = "station name")
     private String stationName;
 
+    @CsvBindByName(column = "station latitude")
     private String stationLatitude;
 
+    @CsvBindByName(column = "station longitude")
     private String stationLongitude;
 
+    @CsvBindByName(column = "bike_id")
     private int bikeId;
 
+    @CsvBindByName(column = "current bike count")
     private int currentBikeCount;
 
+    @CsvBindByName(column = "initial bike count")
     private int initialBikeCount;
 
     public int getId() {
@@ -30,11 +42,11 @@ public final class Station {
         this.id = id;
     }
 
-    public DateTime getActionTime() {
+    public String getActionTime() {
         return actionTime;
     }
 
-    public void setActionTime(DateTime actionTime) {
+    public void setActionTime(String actionTime) {
         this.actionTime = actionTime;
     }
 
@@ -92,5 +104,20 @@ public final class Station {
 
     public void setInitialBikeCount(int initialBikeCount) {
         this.initialBikeCount = initialBikeCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", actionTime=" + actionTime +
+                ", type=" + type +
+                ", stationName='" + stationName + '\'' +
+                ", stationLatitude='" + stationLatitude + '\'' +
+                ", stationLongitude='" + stationLongitude + '\'' +
+                ", bikeId=" + bikeId +
+                ", currentBikeCount=" + currentBikeCount +
+                ", initialBikeCount=" + initialBikeCount +
+                '}';
     }
 }
