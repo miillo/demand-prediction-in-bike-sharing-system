@@ -7,6 +7,9 @@ import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
 import akka.routing.Router;
+import com.system.pojo.UserRequest;
+import com.system.pojo.weather.WeatherAPI;
+import com.system.processing.ProcessingDataActor;
 import com.system.settings.AppSettings;
 
 import java.util.ArrayList;
@@ -18,19 +21,17 @@ public class WeatherDataActorRouter extends AbstractLoggingActor {
 
 
     public static final class DownloadWeatherData {
-        final long requestId;
+        public final UserRequest userRequest;
 
-        public DownloadWeatherData(long requestId) {
-            this.requestId = requestId;
+        public DownloadWeatherData(UserRequest userRequest) {
+            this.userRequest = userRequest;
         }
     }
 
     public static final class DownloadedWeatherData {
-        final long requestId;
-        final String weatherData; //probably parsed JSON
+        public final WeatherAPI weatherData;
 
-        public DownloadedWeatherData(long requestId, String weatherData) {
-            this.requestId = requestId;
+        public DownloadedWeatherData(WeatherAPI weatherData) {
             this.weatherData = weatherData;
         }
     }
@@ -54,6 +55,14 @@ public class WeatherDataActorRouter extends AbstractLoggingActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
+                .match(DownloadWeatherData.class, msg -> {
+                    router.route(new WeatherDataActor.DownloadWeatherAPIData(msg.userRequest), self());
+                })
+                .match(DownloadedWeatherData.class, msg -> {
+                    if (msg.weatherData != null) {
+                        getContext().getParent().tell(new ProcessingDataActor.WeatherApiData(msg.weatherData), self());
+                    }
+                })
                 .build();
     }
 

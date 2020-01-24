@@ -2,7 +2,6 @@ package com.system.weatherdata.services;
 
 import com.google.gson.Gson;
 import com.system.pojo.UserRequest;
-import com.system.pojo.weather.Weather;
 import com.system.pojo.weather.WeatherAPI;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -22,24 +21,33 @@ public class WeatherService {
     private final String API_KEY = "GQ09iu1F";
     private final Gson gson = new Gson();
 
-    public void testWeather(UserRequest userRequest) throws IOException {
+    /**
+     * Downloads weather data for requested user date range
+     *
+     * @param userRequest user request data
+     * @throws IOException whether HTTP connection failed
+     */
+    public WeatherAPI getWeatherData(UserRequest userRequest) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         String url = createRequestURL(userRequest);
         HttpGet request = new HttpGet(url);
+        WeatherAPI weatherAPIResponse = null;
 
         try (CloseableHttpResponse response = httpClient.execute(request)) {
             int responseCode = response.getStatusLine().getStatusCode();
             if (responseCode != 200) {
-                throw new IOException("Exception: API response status code = " + responseCode);
+                throw new IOException("Exception: API response status code = " + responseCode + " | Reason: "
+                        + response.getStatusLine().getReasonPhrase());
             }
 
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 String result = EntityUtils.toString(entity);
-                WeatherAPI weatherApiResponse = gson.fromJson(result, WeatherAPI.class);
+                weatherAPIResponse = gson.fromJson(result, WeatherAPI.class);
             }
         }
         httpClient.close();
+        return weatherAPIResponse;
     }
 
     /**

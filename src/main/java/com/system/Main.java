@@ -19,30 +19,8 @@ public class Main {
         AppSettings.readConfig();
 
         ActorSystem system = ActorSystem.create("BikesharingSystem");
-        Map<String, ActorRef> actorRefMap = createHighLevelActors(system);
         ActorRef processingDataActor = system
-                .actorOf(Props.create(ProcessingDataActor.class, "0", actorRefMap), "processingDataActor");
+                .actorOf(Props.create(ProcessingDataActor.class, "0"), "processingDataActor");
         new ApplicationServer(system, processingDataActor);
-    }
-
-    /**
-     * Creates high level actors
-     *
-     * @param system actor system instance
-     * @return map with high level actors
-     */
-    private static Map<String, ActorRef> createHighLevelActors(ActorSystem system) {
-        ActorRef tripDataActorRouter = system
-                .actorOf(Props.create(TripDataActorRouter.class, "0"), "tripDataActorRouter");
-        ActorRef stationDataActorRouter = system
-                .actorOf(Props.create(StationDataActorRouter.class, "0"), "stationDataActorRouter");
-        ActorRef weatherGeoActorRouter = system
-                .actorOf(Props.create(WeatherDataActorRouter.class, "0"), "weatherGeoActorRouter");
-
-        return new HashMap<String, ActorRef>() {{
-            put("tripDataActorRouter", tripDataActorRouter);
-            put("stationDataActorRouter", stationDataActorRouter);
-            put("weatherGeoActorRouter", weatherGeoActorRouter);
-        }};
     }
 }

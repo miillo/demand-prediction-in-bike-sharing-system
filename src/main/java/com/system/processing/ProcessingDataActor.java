@@ -3,24 +3,30 @@ package com.system.processing;
 import akka.actor.AbstractLoggingActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import com.system.bikesharing.stationdata.StationDataActorRouter;
+import com.system.bikesharing.tripdata.TripDataActorRouter;
 import com.system.pojo.UserRequest;
+import com.system.pojo.weather.Weather;
+import com.system.pojo.weather.WeatherAPI;
 import com.system.prediction.PredictionModelActor;
+import com.system.weatherdata.WeatherDataActorRouter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProcessingDataActor extends AbstractLoggingActor {
     private final String processingDataActorId;
     private final Map<String, ActorRef> actorRefMap;
 
-    public ProcessingDataActor(String processingDataActorId, Map<String, ActorRef> actorRefMap) {
+    public ProcessingDataActor(String processingDataActorId) {
         log().info("ProcessingDataActor {} created", processingDataActorId);
         this.processingDataActorId = processingDataActorId;
-        this.actorRefMap = createChildActors(actorRefMap);
+        this.actorRefMap = createChildActors();
     }
 
-    static Props props(String processingDataActorId, Map<String, ActorRef> actorRefMap) {
+    static Props props(String processingDataActorId) {
         return Props.create(ProcessingDataActor.class, () ->
-                new ProcessingDataActor(processingDataActorId, actorRefMap));
+                new ProcessingDataActor(processingDataActorId));
     }
 
     public static final class HandleUserRequest {
@@ -28,6 +34,14 @@ public class ProcessingDataActor extends AbstractLoggingActor {
 
         public HandleUserRequest(UserRequest userRequest) {
             this.userRequest = userRequest;
+        }
+    }
+
+    public static final class WeatherApiData {
+        public final WeatherAPI weatherAPI;
+
+        public WeatherApiData(WeatherAPI weatherAPI) {
+            this.weatherAPI = weatherAPI;
         }
     }
 
@@ -39,23 +53,40 @@ public class ProcessingDataActor extends AbstractLoggingActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(HandleUserRequest.class, userRequest -> {
+                .match(HandleUserRequest.class, msg -> {
                     //todo wysylanie requestow o dane stacji / tras / geo
+                    actorRefMap.get("weatherGeoActorRouter").tell(new WeatherDataActorRouter.DownloadWeatherData(msg.userRequest), getSelf());
+                })
+                .match(WeatherApiData.class, msg -> {
+                    System.out.println("ProcessingDataActor received Weather API data");
+                    System.out.println(msg.weatherAPI);
                 })
                 .build();
     }
 
     /**
-     * Creates child actors: PersistenceActor and PredictionModelActor
+     * Creates child actors: PersistenceActor | PredictionModelActor | TripDataActorRouter | StationDataActorRouter
+     * WeatherDataActorRouter
      *
-     * @param actorRefMap map with actor references
      * @return updated map with actor references
      */
-    private Map<String, ActorRef> createChildActors(Map<String, ActorRef> actorRefMap) {
+    private Map<String, ActorRef> createChildActors() {
+        ActorRef tripDataActorRouter = getContext()
+                .actorOf(Props.create(TripDataActorRouter.class, "0"), "tripDataActorRouter");
+        ActorRef stationDataActorRouter = getContext()
+                .actorOf(Props.create(StationDataActorRouter.class, "0"), "stationDataActorRouter");
+        ActorRef weatherGeoActorRouter = getContext()
+                .actorOf(Props.create(WeatherDataActorRouter.class, "0"), "weatherGeoActorRouter");
+
         ActorRef persistenceActor = getContext().actorOf(Props.create(PersistenceActor.class, "0"), "PersistenceActor");
         ActorRef predictionModelActor = getContext().actorOf(Props.create(PredictionModelActor.class, "0"), "PredictionModelActor");
-        actorRefMap.put("persistenceActor", persistenceActor);
-        actorRefMap.put("predictionModelActor", predictionModelActor);
-        return actorRefMap;
+
+        return new HashMap<String, ActorRef>() {{
+            put("tripDataActorRouter", tripDataActorRouter);
+            put("stationDataActorRouter", stationDataActorRouter);
+            put("weatherGeoActorRouter", weatherGeoActorRouter);
+            put("persistenceActor", persistenceActor);
+            put("predictionModelActor", predictionModelActor);
+        }};
     }
 }
