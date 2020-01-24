@@ -6,6 +6,7 @@ import akka.actor.Props;
 import com.system.bikesharing.stationdata.StationDataActorRouter;
 import com.system.bikesharing.tripdata.TripDataActorRouter;
 import com.system.pojo.Station;
+import com.system.pojo.Trip;
 import com.system.pojo.UserRequest;
 import com.system.pojo.weather.Weather;
 import com.system.pojo.weather.WeatherAPI;
@@ -55,6 +56,14 @@ public class ProcessingDataActor extends AbstractLoggingActor {
         }
     }
 
+    public static final class TripsData {
+        public final List<Trip> trips;
+
+        public TripsData(List<Trip> trips) {
+            this.trips = trips;
+        }
+    }
+
     @Override
     public void preStart() throws Exception {
         super.preStart();
@@ -66,7 +75,8 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                 .match(HandleUserRequest.class, msg -> {
                     //todo wysylanie requestow o dane stacji / tras / geo
 //                    actorRefMap.get("weatherGeoActorRouter").tell(new WeatherDataActorRouter.DownloadWeatherData(msg.userRequest), getSelf());
-                    actorRefMap.get("stationDataActorRouter").tell(new StationDataActorRouter.DownloadStationsData(msg.userRequest), getSelf());
+//                    actorRefMap.get("stationDataActorRouter").tell(new StationDataActorRouter.DownloadStationsData(msg.userRequest), getSelf());
+                    actorRefMap.get("tripDataActorRouter").tell(new TripDataActorRouter.DownloadTripsData(msg.userRequest), getSelf());
                 })
                 .match(WeatherApiData.class, msg -> {
                     //todo save and check if rest was computed
@@ -77,6 +87,11 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     //todo save and check if rest was computed
                     System.out.println("ProcessingDataActor received Stations data");
                     System.out.println(msg.stations);
+                })
+                .match(TripsData.class, msg -> {
+                    //todo save and check if rest was computed
+                    System.out.println("ProcessingDataActor received Trips data");
+                    System.out.println(msg.trips);
                 })
                 .build();
     }

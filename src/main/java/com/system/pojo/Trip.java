@@ -1,41 +1,35 @@
 package com.system.pojo;
 
+import com.opencsv.bean.CsvBindByName;
 import org.joda.time.DateTime;
 
 public final class Trip {
-
-    private long id;
-
+    @CsvBindByName(column = "tripduration")
     private long duration;
 
-    private DateTime startTime;
+    @CsvBindByName(column = "starttime")
+    private String startTime;
 
-    private DateTime endTime;
+    @CsvBindByName(column = "stoptime")
+    private String endTime;
 
+    @CsvBindByName(column = "start station id")
     private int startStationId;
 
+    @CsvBindByName(column = "end station id")
     private int endStationId;
 
+    @CsvBindByName(column = "bikeid")
     private int bikeId;
 
-    private int userType;
+    @CsvBindByName(column = "usertype")
+    private String userType;
 
+    @CsvBindByName(column = "birth year")
     private int birthYear;
 
+    @CsvBindByName(column = "gender")
     private int gender;
-
-    public Trip(int i, String s) {
-        id = i;
-        duration = Long.parseLong(s);
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public long getDuration() {
         return duration;
@@ -45,19 +39,19 @@ public final class Trip {
         this.duration = duration;
     }
 
-    public DateTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(DateTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public DateTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(DateTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -85,11 +79,11 @@ public final class Trip {
         this.bikeId = bikeId;
     }
 
-    public int getUserType() {
+    public String getUserType() {
         return userType;
     }
 
-    public void setUserType(int userType) {
+    public void setUserType(String userType) {
         this.userType = userType;
     }
 
@@ -107,5 +101,20 @@ public final class Trip {
 
     public void setGender(int gender) {
         this.gender = gender;
+    }
+
+    @Override
+    public String toString() {
+        return "Trip{" +
+                "duration=" + duration +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", startStationId=" + startStationId +
+                ", endStationId=" + endStationId +
+                ", bikeId=" + bikeId +
+                ", userType='" + userType + '\'' +
+                ", birthYear=" + birthYear +
+                ", gender=" + gender +
+                '}';
     }
 }

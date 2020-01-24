@@ -3,6 +3,7 @@ package com.system.bikesharing.services;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.system.pojo.Station;
+import com.system.pojo.Trip;
 import com.system.pojo.UserRequest;
 
 import java.io.IOException;
@@ -41,5 +42,32 @@ public class FileService {
             }
         }
         return stations;
+    }
+
+    /**
+     * Reads trips data from CSV file
+     *
+     * @param userRequest user request data
+     * @return list of filtered trips data
+     * @throws IOException whether file exception occurred
+     */
+    public List<Trip> readTripsData(UserRequest userRequest) throws IOException {
+        List<Trip> trips = new ArrayList<>();
+        //todo sciezka do configa???
+        try (Reader reader = Files.newBufferedReader(Paths.get("src\\main\\resources\\trip_data_small.csv"))) {
+            CsvToBean<Trip> csvToBean = new CsvToBeanBuilder<Trip>(reader)
+                    .withType(Trip.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build();
+
+            Iterator<Trip> csvStationIterator = csvToBean.iterator();
+
+            while (csvStationIterator.hasNext()) {
+                Trip trip = csvStationIterator.next();
+                //todo filtr po dacie na podstawie userRequest
+                trips.add(trip);
+            }
+        }
+        return trips;
     }
 }

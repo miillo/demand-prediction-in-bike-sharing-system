@@ -7,6 +7,10 @@ import akka.routing.ActorRefRoutee;
 import akka.routing.RoundRobinRoutingLogic;
 import akka.routing.Routee;
 import akka.routing.Router;
+import com.system.pojo.Station;
+import com.system.pojo.Trip;
+import com.system.pojo.UserRequest;
+import com.system.processing.ProcessingDataActor;
 import com.system.settings.AppSettings;
 
 import java.util.ArrayList;
@@ -17,16 +21,19 @@ public class TripDataActorRouter extends AbstractLoggingActor {
     private final Router router;
 
 
-    public static final class DownloadTripData {
-        public DownloadTripData() {
+    public static final class DownloadTripsData {
+        public final UserRequest userRequest;
+
+        public DownloadTripsData(UserRequest userRequest) {
+            this.userRequest = userRequest;
         }
     }
 
-    public static final class DownloadedTripData {
-        final String[] tripData;
+    public static final class DownloadedTripsData {
+        public final List<Trip> trips;
 
-        public DownloadedTripData(String[] tripData) {
-            this.tripData = tripData;
+        public DownloadedTripsData(List<Trip> trips) {
+            this.trips = trips;
         }
     }
 
@@ -49,6 +56,14 @@ public class TripDataActorRouter extends AbstractLoggingActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
+                .match(DownloadTripsData.class, msg -> {
+                    router.route(new TripDataActor.DownloadTripsData(msg.userRequest), self());
+                })
+                .match(DownloadedTripsData.class, msg -> {
+                    if (msg.trips != null) {
+                        getContext().getParent().tell(new ProcessingDataActor.TripsData(msg.trips), self());
+                    }
+                })
                 .build();
     }
 
