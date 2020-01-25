@@ -23,17 +23,21 @@ public class TripDataActorRouter extends AbstractLoggingActor {
 
     public static final class DownloadTripsData {
         public final UserRequest userRequest;
+        public final String jobUUID;
 
-        public DownloadTripsData(UserRequest userRequest) {
+        public DownloadTripsData(UserRequest userRequest, String jobUUID) {
             this.userRequest = userRequest;
+            this.jobUUID = jobUUID;
         }
     }
 
     public static final class DownloadedTripsData {
         public final List<Trip> trips;
+        public final String jobUUID;
 
-        public DownloadedTripsData(List<Trip> trips) {
+        public DownloadedTripsData(List<Trip> trips, String jobUUID) {
             this.trips = trips;
+            this.jobUUID = jobUUID;
         }
     }
 
@@ -57,11 +61,11 @@ public class TripDataActorRouter extends AbstractLoggingActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(DownloadTripsData.class, msg -> {
-                    router.route(new TripDataActor.DownloadTripsData(msg.userRequest), self());
+                    router.route(new TripDataActor.DownloadTripsData(msg.userRequest, msg.jobUUID), self());
                 })
                 .match(DownloadedTripsData.class, msg -> {
                     if (msg.trips != null) {
-                        getContext().getParent().tell(new ProcessingDataActor.TripsData(msg.trips), self());
+                        getContext().getParent().tell(new ProcessingDataActor.TripsData(msg.trips, msg.jobUUID), self());
                     }
                 })
                 .build();

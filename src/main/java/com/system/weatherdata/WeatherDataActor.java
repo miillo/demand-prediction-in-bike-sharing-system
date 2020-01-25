@@ -27,9 +27,11 @@ public class WeatherDataActor extends AbstractLoggingActor {
 
     public static final class DownloadWeatherAPIData {
         public final UserRequest userRequest;
+        public final String jobUUID;
 
-        public DownloadWeatherAPIData(UserRequest userRequest) {
+        public DownloadWeatherAPIData(UserRequest userRequest, String jobUUID) {
             this.userRequest = userRequest;
+            this.jobUUID = jobUUID;
         }
     }
 
@@ -39,7 +41,7 @@ public class WeatherDataActor extends AbstractLoggingActor {
                 .match(DownloadWeatherAPIData.class, msg -> {
                     try {
                         WeatherAPI weatherData = weatherService.getWeatherData(msg.userRequest);
-                        getSender().tell(new WeatherDataActorRouter.DownloadedWeatherData(weatherData), getSelf());
+                        getSender().tell(new WeatherDataActorRouter.DownloadedWeatherData(weatherData, msg.jobUUID), getSelf());
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

@@ -22,17 +22,21 @@ public class StationDataActorRouter extends AbstractLoggingActor {
 
     public static final class DownloadStationsData {
         public final UserRequest userRequest;
+        public final String jobUUID;
 
-        public DownloadStationsData(UserRequest userRequest) {
+        public DownloadStationsData(UserRequest userRequest, String jobUUID) {
             this.userRequest = userRequest;
+            this.jobUUID = jobUUID;
         }
     }
 
     public static final class DownloadedStationsData {
         public final List<Station> stations;
+        public final String jobUUID;
 
-        public DownloadedStationsData(List<Station> stations) {
+        public DownloadedStationsData(List<Station> stations, String jobUUID) {
             this.stations = stations;
+            this.jobUUID = jobUUID;
         }
     }
 
@@ -56,11 +60,11 @@ public class StationDataActorRouter extends AbstractLoggingActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(DownloadStationsData.class, msg -> {
-                    router.route(new StationDataActor.DownloadStationsData(msg.userRequest), self());
+                    router.route(new StationDataActor.DownloadStationsData(msg.userRequest, msg.jobUUID), self());
                 })
                 .match(DownloadedStationsData.class, msg -> {
                     if (msg.stations != null) {
-                        getContext().getParent().tell(new ProcessingDataActor.StationsData(msg.stations),self());
+                        getContext().getParent().tell(new ProcessingDataActor.StationsData(msg.stations, msg.jobUUID),self());
                     }
                 })
                 .build();

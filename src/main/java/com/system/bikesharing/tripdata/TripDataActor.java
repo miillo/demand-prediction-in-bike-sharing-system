@@ -25,9 +25,11 @@ public class TripDataActor extends AbstractLoggingActor {
 
     public static final class DownloadTripsData {
         public final UserRequest userRequest;
+        public final String jobUUID;
 
-        public DownloadTripsData(UserRequest userRequest) {
+        public DownloadTripsData(UserRequest userRequest, String jobUUID) {
             this.userRequest = userRequest;
+            this.jobUUID = jobUUID;
         }
     }
 
@@ -42,7 +44,7 @@ public class TripDataActor extends AbstractLoggingActor {
                 .match(DownloadTripsData.class, msg -> {
                     try {
                         List<Trip> trips = fileService.readTripsData(msg.userRequest);
-                        getSender().tell(new TripDataActorRouter.DownloadedTripsData(trips), self());
+                        getSender().tell(new TripDataActorRouter.DownloadedTripsData(trips, msg.jobUUID), self());
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
                     }

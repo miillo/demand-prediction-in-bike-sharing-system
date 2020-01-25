@@ -30,9 +30,11 @@ public class StationDataActor extends AbstractLoggingActor {
 
     public static final class DownloadStationsData {
         public final UserRequest userRequest;
+        public final String jobUUID;
 
-        public DownloadStationsData(UserRequest userRequest) {
+        public DownloadStationsData(UserRequest userRequest, String jobUUID) {
             this.userRequest = userRequest;
+            this.jobUUID = jobUUID;
         }
     }
 
@@ -42,7 +44,7 @@ public class StationDataActor extends AbstractLoggingActor {
                 .match(DownloadStationsData.class, msg -> {
                     try {
                         List<Station> stations = fileService.readStationsData(msg.userRequest);
-                        getSender().tell(new StationDataActorRouter.DownloadedStationsData(stations), self());
+                        getSender().tell(new StationDataActorRouter.DownloadedStationsData(stations, msg.jobUUID), self());
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
                     }
