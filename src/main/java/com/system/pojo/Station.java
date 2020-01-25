@@ -1,11 +1,13 @@
 package com.system.pojo;
 
 import com.opencsv.bean.CsvBindByName;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
 public final class Station {
 
     @CsvBindByName(column = "station id")
-    private int id;
+    private int stationId;
 
     @CsvBindByName(column = "time")
     private String actionTime;
@@ -32,11 +34,11 @@ public final class Station {
     private int initialBikeCount;
 
     public int getId() {
-        return id;
+        return stationId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setStationId(int stationId) {
+        this.stationId = stationId;
     }
 
     public String getActionTime() {
@@ -106,7 +108,7 @@ public final class Station {
     @Override
     public String toString() {
         return "Station{" +
-                "id=" + id +
+                "id=" + stationId +
                 ", actionTime=" + actionTime +
                 ", type=" + type +
                 ", stationName='" + stationName + '\'' +

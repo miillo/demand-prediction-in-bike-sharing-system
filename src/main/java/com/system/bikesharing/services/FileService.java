@@ -33,12 +33,13 @@ public class FileService {
         String stationsPath = AppSettings.stationsPath;
         Reader reader = Files.newBufferedReader(Paths.get(stationsPath));
 
-        CsvToBean<Station> csvToBean = new CsvToBeanBuilder<Station>(reader)
+        List<Station> stations = new CsvToBeanBuilder<Station>(reader)
                 .withType(Station.class)
                 .withIgnoreLeadingWhiteSpace(true)
-                .build();
+                .build()
+                .parse();
 
-        return csvToBean.parse().stream()
+        return stations.stream()
                 .filter(station -> parseDate(station.getActionTime()).after(parseRequestStartDate(userRequest.getStartDate())))
                 .filter(station -> parseDate(station.getActionTime()).before(parseRequestEndDate(userRequest.getEndDate())))
                 .collect(Collectors.toList());

@@ -2,7 +2,9 @@ package com.system.pojo;
 
 import com.opencsv.bean.CsvBindByName;
 
+
 public final class Trip {
+
     @CsvBindByName(column = "tripduration")
     private long duration;
 
