@@ -47,4 +47,13 @@ public class PredictionData {
     public void setWeatherAPI(WeatherAPI weatherAPI) {
         this.weatherAPI = weatherAPI;
     }
+
+    @Override
+    public String toString() {
+        return "PredictionData{" +
+                ", trips=" + trips +
+                ", stations=" + stations +
+                ", weatherAPI=" + weatherAPI +
+                '}';
+    }
 }

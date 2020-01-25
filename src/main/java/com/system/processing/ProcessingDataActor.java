@@ -95,7 +95,8 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     predictionData.setWeatherAPI(msg.weatherAPI);
                     predictionData.incrementDataCompleteness();
                     if (predictionData.getDataCompleteness() == 3) {
-                        //todo send to predictionActor / Persistence
+                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, predictionData), self());
+                        actorRefMap.get("persistenceActor").tell(new PersistenceActor.SaveCollectedData(msg.jobUUID, predictionData), self());
                         predictionDataMap.remove(msg.jobUUID); //test
                         System.out.println(predictionDataMap);
                     }
@@ -106,7 +107,8 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     predictionData.setStations(msg.stations);
                     predictionData.incrementDataCompleteness();
                     if (predictionData.getDataCompleteness() == 3) {
-                        //todo send to predictionActor / Persistence
+                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, predictionData), self());
+                        actorRefMap.get("persistenceActor").tell(new PersistenceActor.SaveCollectedData(msg.jobUUID, predictionData), self());
                         predictionDataMap.remove(msg.jobUUID);
                         System.out.println(predictionDataMap);
                     }
@@ -117,7 +119,8 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     predictionData.setTrips(msg.trips);
                     predictionData.incrementDataCompleteness();
                     if (predictionData.getDataCompleteness() == 3) {
-                        //todo send to predictionActor / Persistence
+                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, predictionData), self());
+                        actorRefMap.get("persistenceActor").tell(new PersistenceActor.SaveCollectedData(msg.jobUUID, predictionData), self());
                         predictionDataMap.remove(msg.jobUUID);
                         System.out.println(predictionDataMap);
                     }

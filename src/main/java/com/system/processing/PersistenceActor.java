@@ -3,6 +3,7 @@ package com.system.processing;
 import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
 import com.system.database.MongoConfig;
+import com.system.pojo.PredictionData;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 public class PersistenceActor extends AbstractLoggingActor {
@@ -26,9 +27,23 @@ public class PersistenceActor extends AbstractLoggingActor {
         super.preStart();
     }
 
+    public static final class SaveCollectedData {
+        public final String jobUUID;
+        public final PredictionData predictionData;
+
+        public SaveCollectedData(String jobUUID, PredictionData predictionData) {
+            this.jobUUID = jobUUID;
+            this.predictionData = predictionData;
+        }
+    }
+
     @Override
     public Receive createReceive() {
         return receiveBuilder()
+                .match(SaveCollectedData.class, msg -> {
+                    System.out.println("PersistenceActor received collected data with job ID: " + msg.jobUUID);
+                    System.out.println(msg.predictionData);
+                })
                 .build();
     }
 }
