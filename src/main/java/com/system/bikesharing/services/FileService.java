@@ -5,17 +5,22 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import com.system.pojo.Station;
 import com.system.pojo.Trip;
 import com.system.pojo.UserRequest;
+import com.system.settings.AppSettings;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FileService {
 
+    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
+    private static final String REQUEST_DATE_PATTERN = "yyyy-MM-dd";
 
     /**
      * Reads stations data from CSV file
@@ -25,23 +30,18 @@ public class FileService {
      * @throws IOException whether file exception occurred
      */
     public List<Station> readStationsData(UserRequest userRequest) throws IOException {
-        List<Station> stations = new ArrayList<>();
-        //todo sciezka do configa???
-        try (Reader reader = Files.newBufferedReader(Paths.get("src\\main\\resources\\stations_data_small.csv"))) {
-            CsvToBean<Station> csvToBean = new CsvToBeanBuilder<Station>(reader)
-                    .withType(Station.class)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build();
+        String stationsPath = AppSettings.stationsPath;
+        Reader reader = Files.newBufferedReader(Paths.get(stationsPath));
 
-            Iterator<Station> csvStationIterator = csvToBean.iterator();
+        CsvToBean<Station> csvToBean = new CsvToBeanBuilder<Station>(reader)
+                .withType(Station.class)
+                .withIgnoreLeadingWhiteSpace(true)
+                .build();
 
-            while (csvStationIterator.hasNext()) {
-                Station station = csvStationIterator.next();
-                //todo filtr po dacie na podstawie userRequest
-                stations.add(station);
-            }
-        }
-        return stations;
+        return csvToBean.parse().stream()
+                .filter(station -> parseDate(station.getActionTime()).after(parseRequestStartDate(userRequest.getStartDate())))
+                .filter(station -> parseDate(station.getActionTime()).before(parseRequestEndDate(userRequest.getEndDate())))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -52,22 +52,39 @@ public class FileService {
      * @throws IOException whether file exception occurred
      */
     public List<Trip> readTripsData(UserRequest userRequest) throws IOException {
-        List<Trip> trips = new ArrayList<>();
-        //todo sciezka do configa???
-        try (Reader reader = Files.newBufferedReader(Paths.get("src\\main\\resources\\trip_data_small.csv"))) {
-            CsvToBean<Trip> csvToBean = new CsvToBeanBuilder<Trip>(reader)
-                    .withType(Trip.class)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build();
+        String tripsPath = AppSettings.tripsPath;
+        Reader reader = Files.newBufferedReader(Paths.get(tripsPath));
 
-            Iterator<Trip> csvStationIterator = csvToBean.iterator();
+        CsvToBean<Trip> csvToBean = new CsvToBeanBuilder<Trip>(reader)
+                .withType(Trip.class)
+                .withIgnoreLeadingWhiteSpace(true)
+                .build();
 
-            while (csvStationIterator.hasNext()) {
-                Trip trip = csvStationIterator.next();
-                //todo filtr po dacie na podstawie userRequest
-                trips.add(trip);
-            }
+        return csvToBean.parse().stream()
+                .filter(trip -> parseDate(trip.getStartTime()).after(parseRequestStartDate(userRequest.getStartDate())))
+                .filter(trip -> parseDate(trip.getEndTime()).before(parseRequestEndDate(userRequest.getEndDate())))
+                .collect(Collectors.toList());
+    }
+
+    private Date parseRequestStartDate(String date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(REQUEST_DATE_PATTERN);
+        return dateTimeFormatter.parseDateTime(date).toDate();
+    }
+
+    private Date parseRequestEndDate(String date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(REQUEST_DATE_PATTERN);
+        return dateTimeFormatter.parseDateTime(date).plusDays(1).minusMillis(1).toDate();
+    }
+
+    private Date parseDate(String date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(DATE_PATTERN);
+        return dateTimeFormatter.parseDateTime(removeLastZero(date)).toDate();
+    }
+
+    private static String removeLastZero(String str) {
+        if (str != null && str.length() > 0 && str.charAt(str.length() - 1) == '0') {
+            str = str.substring(0, str.length() - 1);
         }
-        return trips;
+        return str;
     }
 }

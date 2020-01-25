@@ -1,7 +1,6 @@
 package com.system.pojo;
 
 import com.opencsv.bean.CsvBindByName;
-import org.joda.time.DateTime;
 
 public final class Trip {
     @CsvBindByName(column = "tripduration")

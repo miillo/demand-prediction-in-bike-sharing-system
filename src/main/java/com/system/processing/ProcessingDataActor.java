@@ -9,7 +9,6 @@ import com.system.pojo.PredictionData;
 import com.system.pojo.Station;
 import com.system.pojo.Trip;
 import com.system.pojo.UserRequest;
-import com.system.pojo.weather.Weather;
 import com.system.pojo.weather.WeatherAPI;
 import com.system.prediction.PredictionModelActor;
 import com.system.weatherdata.WeatherDataActorRouter;

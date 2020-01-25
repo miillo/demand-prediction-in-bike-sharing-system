@@ -9,7 +9,6 @@ import akka.routing.Routee;
 import akka.routing.Router;
 import com.system.pojo.Station;
 import com.system.pojo.UserRequest;
-import com.system.pojo.weather.WeatherAPI;
 import com.system.processing.ProcessingDataActor;
 import com.system.settings.AppSettings;
 
@@ -64,7 +63,7 @@ public class StationDataActorRouter extends AbstractLoggingActor {
                 })
                 .match(DownloadedStationsData.class, msg -> {
                     if (msg.stations != null) {
-                        getContext().getParent().tell(new ProcessingDataActor.StationsData(msg.stations, msg.jobUUID),self());
+                        getContext().getParent().tell(new ProcessingDataActor.StationsData(msg.stations, msg.jobUUID), self());
                     }
                 })
                 .build();

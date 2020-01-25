@@ -3,6 +3,8 @@ package com.system.settings;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+import java.io.File;
+
 public class AppSettings {
 
     public static int noOfWeatherActors;
@@ -15,6 +17,9 @@ public class AppSettings {
     public static String databaseName;
     public static String databaseDomain;
     public static int databasePort;
+
+    public static String stationsPath;
+    public static String tripsPath;
 
     /**
      * Reads configuration file
@@ -30,5 +35,11 @@ public class AppSettings {
         databaseName = conf.getString("database.name");
         databaseDomain = conf.getString("database.domain");
         databasePort = conf.getInt("database.port");
+        stationsPath = replaceFileSeparator(conf.getString("file-path.stations"));
+        tripsPath = replaceFileSeparator(conf.getString("file-path.trips"));
+    }
+
+    private static String replaceFileSeparator(String path) {
+        return path.replace('\\', File.separatorChar);
     }
 }

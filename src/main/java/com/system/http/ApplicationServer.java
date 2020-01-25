@@ -8,9 +8,9 @@ import akka.event.LoggingAdapter;
 import akka.http.javadsl.ConnectHttp;
 import akka.http.javadsl.Http;
 import akka.http.javadsl.ServerBinding;
+import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
-import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.server.AllDirectives;
 import akka.http.javadsl.server.Route;
 import akka.stream.ActorMaterializer;
@@ -26,7 +26,8 @@ public class ApplicationServer extends AllDirectives {
     private ActorRef processingDataActor;
     private CompletionStage<ServerBinding> serverBinding;
 
-    public ApplicationServer() {}
+    public ApplicationServer() {
+    }
 
     public ApplicationServer(ActorSystem actorSystem, ActorRef processingDataActor) {
         this.log = Logging.getLogger(actorSystem, this);
@@ -51,9 +52,9 @@ public class ApplicationServer extends AllDirectives {
     /**
      * Handles prediction request from user. Message structure:
      * {
-     *     "station-id": "XXXXX"            todo ewentualnie trzeba zrobic liste dostepnych ids
-     *     "start-date": "yyyy-mm-dd"
-     *     "end-date": "yyyy-mm-dd"
+     * "station-id": "XXXXX"            todo ewentualnie trzeba zrobic liste dostepnych ids
+     * "start-date": "yyyy-mm-dd"
+     * "end-date": "yyyy-mm-dd"
      * }
      *
      * @param userRequest user request
