@@ -5,12 +5,10 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import com.system.bikesharing.stationdata.StationDataActorRouter;
 import com.system.bikesharing.tripdata.TripDataActorRouter;
-import com.system.pojo.PredictionData;
-import com.system.pojo.Station;
-import com.system.pojo.Trip;
-import com.system.pojo.UserRequest;
+import com.system.pojo.*;
 import com.system.pojo.weather.WeatherAPI;
 import com.system.prediction.PredictionModelActor;
+import com.system.processing.services.ProcessingDataService;
 import com.system.weatherdata.WeatherDataActorRouter;
 
 import java.util.HashMap;
@@ -22,11 +20,14 @@ public class ProcessingDataActor extends AbstractLoggingActor {
     private final String processingDataActorId;
     private final Map<String, ActorRef> actorRefMap;
     private final Map<String, PredictionData> predictionDataMap;
+    private final ProcessingDataService processingDataService;
+
 
     public ProcessingDataActor(String processingDataActorId) {
         log().info("ProcessingDataActor {} created", processingDataActorId);
         this.processingDataActorId = processingDataActorId;
         this.predictionDataMap = new HashMap<>();
+        this.processingDataService = new ProcessingDataService();
         this.actorRefMap = createChildActors();
     }
 
@@ -94,7 +95,6 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     predictionData.setWeatherAPI(msg.weatherAPI);
                     predictionData.incrementDataCompleteness();
                     if (predictionData.getDataCompleteness() == 3) {
-                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, predictionData), self());
                         actorRefMap.get("persistenceActor").tell(new PersistenceActor.SaveCollectedData(msg.jobUUID, predictionData), self());
                         predictionDataMap.remove(msg.jobUUID); //test
                         System.out.println(predictionDataMap);
@@ -106,7 +106,6 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     predictionData.setStations(msg.stations);
                     predictionData.incrementDataCompleteness();
                     if (predictionData.getDataCompleteness() == 3) {
-                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, predictionData), self());
                         actorRefMap.get("persistenceActor").tell(new PersistenceActor.SaveCollectedData(msg.jobUUID, predictionData), self());
                         predictionDataMap.remove(msg.jobUUID);
                         System.out.println(predictionDataMap);
@@ -118,11 +117,14 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     predictionData.setTrips(msg.trips);
                     predictionData.incrementDataCompleteness();
                     if (predictionData.getDataCompleteness() == 3) {
-                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, predictionData), self());
                         actorRefMap.get("persistenceActor").tell(new PersistenceActor.SaveCollectedData(msg.jobUUID, predictionData), self());
                         predictionDataMap.remove(msg.jobUUID);
                         System.out.println(predictionDataMap);
                     }
+                })
+                .match(PersistenceActor.GetCollectedData.class, msg -> {
+                    List<ProcessedRecord> processedRecords = processingDataService.prepareData(msg.predictionData);
+                    actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, processedRecords), self());
                 })
                 .build();
     }

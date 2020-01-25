@@ -8,8 +8,8 @@ import com.system.pojo.PredictionData;
 import com.system.pojo.Station;
 import com.system.pojo.Trip;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.UUID;
 
 public class PersistenceActor extends AbstractLoggingActor {
     private final String persistenceActorId;
@@ -43,6 +43,17 @@ public class PersistenceActor extends AbstractLoggingActor {
         }
     }
 
+    public static final class GetCollectedData {
+        public final String jobUUID;
+        public final PredictionData predictionData;
+
+        public GetCollectedData(String jobUUID, PredictionData predictionData) {
+            this.jobUUID = jobUUID;
+            this.predictionData = predictionData;
+        }
+
+    }
+
     @Override
     public Receive createReceive() {
         return receiveBuilder()
@@ -62,6 +73,9 @@ public class PersistenceActor extends AbstractLoggingActor {
                     System.out.println("Stations collection size: " + mongoOperations.findAll(Station.class, Collections.STATIONS.name()).size());
                     System.out.println("Trips collection size: " + mongoOperations.findAll(Trip.class, Collections.TRIPS.name()).size());
                     System.out.println("Weathers collection size: " + mongoOperations.findAll(Trip.class, Collections.WEATHERS.name()).size());
+
+                    String jobUUID = UUID.randomUUID().toString();
+                    getContext().getParent().tell(new GetCollectedData(jobUUID, msg.predictionData), self());
                 })
                 .build();
     }
@@ -70,6 +84,7 @@ public class PersistenceActor extends AbstractLoggingActor {
         mongoOperations.getCollection(Collections.STATIONS.name()).drop();
         mongoOperations.getCollection(Collections.TRIPS.name()).drop();
         mongoOperations.getCollection(Collections.WEATHERS.name()).drop();
-    }
+        mongoOperations.getCollection(Collections.STATIONS.name()).dropIndexes();
 
+    }
 }

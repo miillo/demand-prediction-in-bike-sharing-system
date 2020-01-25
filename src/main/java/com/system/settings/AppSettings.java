@@ -21,6 +21,9 @@ public class AppSettings {
     public static String stationsPath;
     public static String tripsPath;
 
+    public static double trainDataRatio;
+    public static double testDataRatio;
+
     /**
      * Reads configuration file
      */
@@ -37,6 +40,8 @@ public class AppSettings {
         databasePort = conf.getInt("database.port");
         stationsPath = replaceFileSeparator(conf.getString("file-path.stations"));
         tripsPath = replaceFileSeparator(conf.getString("file-path.trips"));
+        trainDataRatio = conf.getDouble("data-ratio.train");
+        testDataRatio = conf.getDouble("data-ratio.test");
     }
 
     private static String replaceFileSeparator(String path) {

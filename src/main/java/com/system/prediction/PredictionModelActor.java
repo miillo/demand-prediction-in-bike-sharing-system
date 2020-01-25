@@ -2,20 +2,19 @@ package com.system.prediction;
 
 import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
-import com.system.database.MongoConfig;
-import com.system.pojo.PredictionData;
-import org.springframework.data.mongodb.core.MongoOperations;
+import com.system.pojo.ProcessedRecord;
+import com.system.prediction.services.PredictionModelService;
+
+import java.util.List;
 
 public class PredictionModelActor extends AbstractLoggingActor {
     private final String predictionModelActorId;
-
-    private final MongoOperations mongoOperations;
+    private final PredictionModelService predictionModelService;
 
     public PredictionModelActor(String predictionModelActorId) {
         log().info("PredictionModelActor {} created", predictionModelActorId);
         this.predictionModelActorId = predictionModelActorId;
-        MongoConfig config = new MongoConfig();
-        this.mongoOperations = config.mongoTemplate();
+        this.predictionModelService = new PredictionModelService();
     }
 
     static Props props(String predictionModelActorId) {
@@ -29,11 +28,11 @@ public class PredictionModelActor extends AbstractLoggingActor {
 
     public static final class PredictDemand {
         public final String jobUUID;
-        public final PredictionData predictionData;
+        public final List<ProcessedRecord> processedRecords;
 
-        public PredictDemand(String jobUUID, PredictionData predictionData) {
+        public PredictDemand(String jobUUID, List<ProcessedRecord> processedRecords) {
             this.jobUUID = jobUUID;
-            this.predictionData = predictionData;
+            this.processedRecords = processedRecords;
         }
     }
 
@@ -42,7 +41,12 @@ public class PredictionModelActor extends AbstractLoggingActor {
         return receiveBuilder()
                 .match(PredictDemand.class, msg -> {
                     System.out.println("PredictionModelActor received data with job ID: " + msg.jobUUID);
-                    System.out.println(msg.predictionData);
+                    List<ProcessedRecord> trainData = predictionModelService.splitData(msg.processedRecords).get(false);
+                    List<ProcessedRecord> testData = predictionModelService.splitData(msg.processedRecords).get(true);
+                    System.out.println("Train data");
+                    trainData.forEach(System.out::println);
+                    System.out.println("Test data");
+                    testData.forEach(System.out::println);
                 })
                 .build();
     }
