@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class PredictionModelService {
     public Map<Boolean, List<ProcessedRecord>> splitData(List<ProcessedRecord> processedRecords) {
-        int index = processedRecords.size() * AppSettings.trainDataRatio;
+        int index = (int) (processedRecords.size() * AppSettings.trainDataRatio);
 
         Map<Boolean, List<ProcessedRecord>> resultMap = new HashMap<>();
         resultMap.put(false, processedRecords.subList(0, index));
@@ -17,4 +17,6 @@ public class PredictionModelService {
 
         return resultMap;
     }
+
+
 }

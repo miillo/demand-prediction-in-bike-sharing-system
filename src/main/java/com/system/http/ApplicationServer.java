@@ -43,7 +43,7 @@ public class ApplicationServer extends AllDirectives {
      */
     private Route createRoute() {
         return concat(
-                path("request-pred", () ->
+                path(AppSettings.httpEndpoint, () ->
                         post(() ->
                                 entity(Jackson.unmarshaller(UserRequest.class), this::handlePredictionRequest))
                 ));
