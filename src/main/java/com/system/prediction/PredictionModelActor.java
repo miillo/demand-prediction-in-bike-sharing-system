@@ -47,6 +47,9 @@ public class PredictionModelActor extends AbstractLoggingActor {
                     trainData.forEach(System.out::println);
                     System.out.println("Test data");
                     testData.forEach(System.out::println);
+
+
+                    predictionModelService.wekaWeka(trainData, testData);
                 })
                 .build();
     }
