@@ -7,7 +7,10 @@ import com.system.database.MongoConfig;
 import com.system.pojo.PredictionData;
 import com.system.pojo.Station;
 import com.system.pojo.Trip;
+import com.system.pojo.weather.Weather;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.UUID;
 
@@ -21,7 +24,6 @@ public class PersistenceActor extends AbstractLoggingActor {
         this.persistenceActorId = persistenceActorId;
         MongoConfig config = new MongoConfig();
         this.mongoOperations = config.mongoTemplate();
-        dropCollections();
     }
 
     static Props props(String persistenceActorId) {
@@ -54,12 +56,24 @@ public class PersistenceActor extends AbstractLoggingActor {
 
     }
 
+    public static final class GetCollectedDataforStation {
+        public final String jobUUID;
+        public final int stationId;
+
+        public GetCollectedDataforStation(String jobUUID, int stationId) {
+            this.jobUUID = jobUUID;
+            this.stationId = stationId;
+        }
+
+    }
+
     @Override
     public Receive createReceive() {
         return receiveBuilder()
                 .match(SaveCollectedData.class, msg -> {
+                    dropCollections();
+
                     System.out.println("PersistenceActor received collected data with job ID: " + msg.jobUUID);
-                    System.out.println(msg.predictionData);
 
                     msg.predictionData.getStations()
                             .forEach(station -> mongoOperations.save(station, Collections.STATIONS.name()));
@@ -70,12 +84,21 @@ public class PersistenceActor extends AbstractLoggingActor {
                     msg.predictionData.getWeatherAPI().getWeathersByDay()
                             .forEach(weather -> mongoOperations.save(weather, Collections.WEATHERS.name()));
 
-                    System.out.println("Stations collection size: " + mongoOperations.findAll(Station.class, Collections.STATIONS.name()).size());
-                    System.out.println("Trips collection size: " + mongoOperations.findAll(Trip.class, Collections.TRIPS.name()).size());
-                    System.out.println("Weathers collection size: " + mongoOperations.findAll(Trip.class, Collections.WEATHERS.name()).size());
+                    msg.predictionData.setWeathers(msg.predictionData.getWeatherAPI().getWeathersByDay());
 
                     String jobUUID = UUID.randomUUID().toString();
                     getContext().getParent().tell(new GetCollectedData(jobUUID, msg.predictionData), self());
+                })
+                .match(GetCollectedDataforStation.class, msg -> {
+                    PredictionData data = new PredictionData();
+                    data.setStations(mongoOperations.
+                            find(new Query().addCriteria(Criteria.where("stationId").is(msg.stationId)), Station.class, Collections.STATIONS.name()));
+                    data.setTrips(mongoOperations.find(new Query().addCriteria(Criteria.where("startStationId").is(msg.stationId)
+                            .orOperator(Criteria.where("endStationId").is(msg.stationId))), Trip.class, Collections.TRIPS.name()));
+                    data.setWeathers(mongoOperations.findAll(Weather.class, Collections.WEATHERS.name()));
+
+                    String jobUUID = UUID.randomUUID().toString();
+                    getContext().getParent().tell(new GetCollectedData(jobUUID, data), self());
                 })
                 .build();
     }

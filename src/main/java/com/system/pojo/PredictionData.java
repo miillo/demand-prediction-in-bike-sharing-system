@@ -1,5 +1,6 @@
 package com.system.pojo;
 
+import com.system.pojo.weather.Weather;
 import com.system.pojo.weather.WeatherAPI;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ public class PredictionData {
     private List<Trip> trips;
     private List<Station> stations;
     private WeatherAPI weatherAPI;
+    private List<Weather> weathers;
 
     public PredictionData() {
         this.trips = new ArrayList<>();
@@ -46,6 +48,14 @@ public class PredictionData {
 
     public void setWeatherAPI(WeatherAPI weatherAPI) {
         this.weatherAPI = weatherAPI;
+    }
+
+    public List<Weather> getWeathers() {
+        return weathers;
+    }
+
+    public void setWeathers(List<Weather> weathers) {
+        this.weathers = weathers;
     }
 
     @Override

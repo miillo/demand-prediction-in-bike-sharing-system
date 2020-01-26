@@ -22,8 +22,12 @@ public class AppSettings {
     public static String stationsPath;
     public static String tripsPath;
 
-    public static double trainDataRatio;
-    public static double testDataRatio;
+    public static int trainDataRatio;
+    public static int testDataRatio;
+
+    public static int bestK;
+
+    public static String classifierPath;
 
     /**
      * Reads configuration file
@@ -42,8 +46,10 @@ public class AppSettings {
         databasePort = conf.getInt("database.port");
         stationsPath = replaceFileSeparator(conf.getString("file-path.stations"));
         tripsPath = replaceFileSeparator(conf.getString("file-path.trips"));
-        trainDataRatio = conf.getDouble("data-ratio.train");
-        testDataRatio = conf.getDouble("data-ratio.test");
+        trainDataRatio = conf.getInt("classification.train-data-ratio");
+        testDataRatio = conf.getInt("classification.test-data-ratio");
+        bestK = conf.getInt("classification.bestK");
+        classifierPath = conf.getString("classification.classifierPath");
     }
 
     private static String replaceFileSeparator(String path) {

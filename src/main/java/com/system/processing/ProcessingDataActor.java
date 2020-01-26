@@ -9,8 +9,11 @@ import com.system.pojo.*;
 import com.system.pojo.weather.WeatherAPI;
 import com.system.prediction.PredictionModelActor;
 import com.system.processing.services.ProcessingDataService;
+import com.system.settings.AppSettings;
 import com.system.weatherdata.WeatherDataActorRouter;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,7 @@ public class ProcessingDataActor extends AbstractLoggingActor {
     private final Map<String, ActorRef> actorRefMap;
     private final Map<String, PredictionData> predictionDataMap;
     private final ProcessingDataService processingDataService;
+    private int stationId;
 
 
     public ProcessingDataActor(String processingDataActorId) {
@@ -88,6 +92,7 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     actorRefMap.get("weatherGeoActorRouter").tell(new WeatherDataActorRouter.DownloadWeatherData(msg.userRequest, jobUUID), getSelf());
                     actorRefMap.get("stationDataActorRouter").tell(new StationDataActorRouter.DownloadStationsData(msg.userRequest, jobUUID), getSelf());
                     actorRefMap.get("tripDataActorRouter").tell(new TripDataActorRouter.DownloadTripsData(msg.userRequest, jobUUID), getSelf());
+                    this.stationId = Integer.parseInt(msg.userRequest.getStationId());
                 })
                 .match(WeatherApiData.class, msg -> {
                     System.out.println("ProcessingDataActor received Weather API data for job: " + msg.jobUUID);
@@ -96,8 +101,7 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     predictionData.incrementDataCompleteness();
                     if (predictionData.getDataCompleteness() == 3) {
                         actorRefMap.get("persistenceActor").tell(new PersistenceActor.SaveCollectedData(msg.jobUUID, predictionData), self());
-                        predictionDataMap.remove(msg.jobUUID); //test
-                        System.out.println(predictionDataMap);
+                        predictionDataMap.remove(msg.jobUUID);
                     }
                 })
                 .match(StationsData.class, msg -> {
@@ -108,7 +112,6 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     if (predictionData.getDataCompleteness() == 3) {
                         actorRefMap.get("persistenceActor").tell(new PersistenceActor.SaveCollectedData(msg.jobUUID, predictionData), self());
                         predictionDataMap.remove(msg.jobUUID);
-                        System.out.println(predictionDataMap);
                     }
                 })
                 .match(TripsData.class, msg -> {
@@ -119,12 +122,19 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     if (predictionData.getDataCompleteness() == 3) {
                         actorRefMap.get("persistenceActor").tell(new PersistenceActor.SaveCollectedData(msg.jobUUID, predictionData), self());
                         predictionDataMap.remove(msg.jobUUID);
-                        System.out.println(predictionDataMap);
                     }
                 })
                 .match(PersistenceActor.GetCollectedData.class, msg -> {
-                    List<ProcessedRecord> processedRecords = processingDataService.prepareData(msg.predictionData);
-                    actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, processedRecords), self());
+                    if (isModelNotExist()) {
+                        List<ProcessedRecord> processedRecords = processingDataService.prepareData(msg.predictionData);
+                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, processedRecords), self());
+                    } else {
+                        if (msg.predictionData.getStations().isEmpty()) {
+                            actorRefMap.get("persistenceActor").tell(new PersistenceActor.GetCollectedDataforStation(msg.jobUUID, stationId), self());
+                        }
+                        List<ProcessedRecord> processedRecords = processingDataService.prepareDataForStation(msg.predictionData, stationId);
+                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemandWithModel(msg.jobUUID, processedRecords), self());
+                    }
                 })
                 .build();
     }
@@ -153,5 +163,10 @@ public class ProcessingDataActor extends AbstractLoggingActor {
             put("persistenceActor", persistenceActor);
             put("predictionModelActor", predictionModelActor);
         }};
+    }
+
+    private boolean isModelNotExist() {
+        File f = new File(AppSettings.classifierPath);
+        return !f.exists();
     }
 }

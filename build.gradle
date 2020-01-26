@@ -29,3 +29,10 @@ dependencies {
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
     compile group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.8.4'
 }
+
+task run (type: JavaExec){
+    description = "sag"
+    main = 'com.system.Main'
+    jvmArgs = [ '-Xms512m', '-Xmx4g', '-Xss4g']
+    classpath = sourceSets.main.runtimeClasspath
+}
