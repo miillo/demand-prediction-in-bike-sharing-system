@@ -51,7 +51,7 @@ public class AppSettings {
         trainDataRatio = conf.getInt("classification.train-data-ratio");
         testDataRatio = conf.getInt("classification.test-data-ratio");
         bestK = conf.getInt("classification.bestK");
-        classifierPath = conf.getString("classification.classifierPath");
+        classifierPath = replaceFileSeparator(conf.getString("classification.classifierPath"));
         generateFlag = conf.getBoolean("option.generate");
     }
 
