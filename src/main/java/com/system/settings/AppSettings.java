@@ -29,6 +29,8 @@ public class AppSettings {
 
     public static String classifierPath;
 
+    public static boolean generateFlag;
+
     /**
      * Reads configuration file
      */
@@ -50,6 +52,7 @@ public class AppSettings {
         testDataRatio = conf.getInt("classification.test-data-ratio");
         bestK = conf.getInt("classification.bestK");
         classifierPath = conf.getString("classification.classifierPath");
+        generateFlag = conf.getBoolean("option.generate");
     }
 
     private static String replaceFileSeparator(String path) {

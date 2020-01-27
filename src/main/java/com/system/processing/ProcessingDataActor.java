@@ -13,7 +13,6 @@ import com.system.settings.AppSettings;
 import com.system.weatherdata.WeatherDataActorRouter;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,11 +87,16 @@ public class ProcessingDataActor extends AbstractLoggingActor {
         return receiveBuilder()
                 .match(HandleUserRequest.class, msg -> {
                     String jobUUID = UUID.randomUUID().toString();
-                    predictionDataMap.put(jobUUID, new PredictionData());
-                    actorRefMap.get("weatherGeoActorRouter").tell(new WeatherDataActorRouter.DownloadWeatherData(msg.userRequest, jobUUID), getSelf());
-                    actorRefMap.get("stationDataActorRouter").tell(new StationDataActorRouter.DownloadStationsData(msg.userRequest, jobUUID), getSelf());
-                    actorRefMap.get("tripDataActorRouter").tell(new TripDataActorRouter.DownloadTripsData(msg.userRequest, jobUUID), getSelf());
                     this.stationId = Integer.parseInt(msg.userRequest.getStationId());
+
+                    if (AppSettings.generateFlag) {
+                        predictionDataMap.put(jobUUID, new PredictionData());
+                        actorRefMap.get("weatherGeoActorRouter").tell(new WeatherDataActorRouter.DownloadWeatherData(msg.userRequest, jobUUID), getSelf());
+                        actorRefMap.get("stationDataActorRouter").tell(new StationDataActorRouter.DownloadStationsData(msg.userRequest, jobUUID), getSelf());
+                        actorRefMap.get("tripDataActorRouter").tell(new TripDataActorRouter.DownloadTripsData(msg.userRequest, jobUUID), getSelf());
+                    } else {
+                        actorRefMap.get("persistenceActor").tell(new PersistenceActor.GetCollectedDataforStation(jobUUID, stationId), self());
+                    }
                 })
                 .match(WeatherApiData.class, msg -> {
                     System.out.println("ProcessingDataActor received Weather API data for job: " + msg.jobUUID);
@@ -128,13 +132,10 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     if (isModelNotExist()) {
                         List<ProcessedRecord> processedRecords = processingDataService.prepareData(msg.predictionData);
                         actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, processedRecords), self());
-                    } else {
-                        if (msg.predictionData.getStations().isEmpty()) {
-                            actorRefMap.get("persistenceActor").tell(new PersistenceActor.GetCollectedDataforStation(msg.jobUUID, stationId), self());
-                        }
-                        List<ProcessedRecord> processedRecords = processingDataService.prepareDataForStation(msg.predictionData, stationId);
-                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemandWithModel(msg.jobUUID, processedRecords), self());
                     }
+
+                    List<ProcessedRecord> processedRecords = processingDataService.prepareDataForStation(msg.predictionData, stationId);
+                    actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemandWithModel(msg.jobUUID, processedRecords), self());
                 })
                 .build();
     }

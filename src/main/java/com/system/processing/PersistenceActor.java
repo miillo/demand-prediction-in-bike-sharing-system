@@ -71,19 +71,15 @@ public class PersistenceActor extends AbstractLoggingActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(SaveCollectedData.class, msg -> {
-                    dropCollections();
-
                     System.out.println("PersistenceActor received collected data with job ID: " + msg.jobUUID);
 
+                    dropCollections();
                     msg.predictionData.getStations()
                             .forEach(station -> mongoOperations.save(station, Collections.STATIONS.name()));
-
                     msg.predictionData.getTrips()
                             .forEach(trip -> mongoOperations.save(trip, Collections.TRIPS.name()));
-
                     msg.predictionData.getWeatherAPI().getWeathersByDay()
                             .forEach(weather -> mongoOperations.save(weather, Collections.WEATHERS.name()));
-
                     msg.predictionData.setWeathers(msg.predictionData.getWeatherAPI().getWeathersByDay());
 
                     String jobUUID = UUID.randomUUID().toString();
@@ -91,8 +87,9 @@ public class PersistenceActor extends AbstractLoggingActor {
                 })
                 .match(GetCollectedDataforStation.class, msg -> {
                     PredictionData data = new PredictionData();
-                    data.setStations(mongoOperations.
-                            find(new Query().addCriteria(Criteria.where("stationId").is(msg.stationId)), Station.class, Collections.STATIONS.name()));
+
+                    data.setStations(mongoOperations.find(new Query().addCriteria(Criteria.where("stationId").is(msg.stationId)),
+                            Station.class, Collections.STATIONS.name()));
                     data.setTrips(mongoOperations.find(new Query().addCriteria(Criteria.where("startStationId").is(msg.stationId)
                             .orOperator(Criteria.where("endStationId").is(msg.stationId))), Trip.class, Collections.TRIPS.name()));
                     data.setWeathers(mongoOperations.findAll(Weather.class, Collections.WEATHERS.name()));
