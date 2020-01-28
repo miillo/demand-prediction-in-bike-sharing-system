@@ -129,13 +129,8 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     }
                 })
                 .match(PersistenceActor.GetCollectedData.class, msg -> {
-                    if (isModelNotExist()) {
-                        List<ProcessedRecord> processedRecords = processingDataService.prepareData(msg.predictionData);
-                        actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, processedRecords), self());
-                    }
-
                     List<ProcessedRecord> processedRecords = processingDataService.prepareDataForStation(msg.predictionData, stationId);
-                    actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemandWithModel(msg.jobUUID, processedRecords), self());
+                    actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, processedRecords), self());
                 })
                 .build();
     }
@@ -166,8 +161,4 @@ public class ProcessingDataActor extends AbstractLoggingActor {
         }};
     }
 
-    private boolean isModelNotExist() {
-        File f = new File(AppSettings.classifierPath);
-        return !f.exists();
-    }
 }

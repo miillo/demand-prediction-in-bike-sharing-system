@@ -3,20 +3,16 @@ package com.system.processing.services;
 import com.system.pojo.PredictionData;
 import com.system.pojo.ProcessedRecord;
 import com.system.pojo.Station;
-import com.system.pojo.Trip;
 import com.system.pojo.weather.Weather;
+import com.system.settings.AppSettings;
+import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class ProcessingDataService {
+import static java.util.stream.Collectors.groupingBy;
 
-    public List<ProcessedRecord> prepareData(PredictionData predictionData) {
-        List<Station> stations = predictionData.getStations();
-        return prepareProcessedRecords(predictionData, stations);
-    }
+public class ProcessingDataService {
 
     public List<ProcessedRecord> prepareDataForStation(PredictionData predictionData, int stationId) {
         List<Station> stations = predictionData.getStations().stream()
@@ -29,51 +25,45 @@ public class ProcessingDataService {
     private List<ProcessedRecord> prepareProcessedRecords(PredictionData predictionData, List<Station> stations) {
         List<ProcessedRecord> processedData = new ArrayList<>();
 
-        int index = 1;
-        for (Station s : stations) {
-            Optional<Weather> w = getWeatherByDate(predictionData, s);
-            Optional<Trip> t = getTripForStation(s, predictionData.getTrips());
+        Date startDate = new DateTime(2019, 9, AppSettings.startDay, 0, 0).toDate();
+        Date endDate = new DateTime(2019, 9, AppSettings.endDay, 23, 59).toDate();
 
-            if (t.isPresent() && w.isPresent()) {
+        stations.forEach(s -> s.setActionTime(trimDate(s.getActionTime())));
+
+        Map<String, Map<Integer, List<Station>>> dateMapTypeMap = stations.stream()
+                .filter(station -> parseDate(station.getActionTime()).after(startDate) && parseDate(station.getActionTime()).before(endDate))
+                .collect(groupingBy(Station::getActionTime, groupingBy(Station::getType)));
+
+        for (String d : dateMapTypeMap.keySet()) {
+            Map<Integer, List<Station>> m = dateMapTypeMap.get(d);
+            int demand = m.get(0).size() - m.get(1).size();
+            Station s = m.get(0).get(0);
+            Optional<Weather> w = getWeatherByDate(predictionData, s);
+            if (w.isPresent()) {
                 processedData.add(
-                        new ProcessedRecord(index++, s.getType(), s.getActionTime(), s.getId(), s.getStationName(),
-                                s.getStationLatitude(), s.getStationLongitude(), s.getBikeId(), s.getCurrentBikeCount(),
-                                s.getInitialBikeCount(), t.get().getUserType(), t.get().getBirthYear(), t.get().getGender(),
+                        new ProcessedRecord(demand, s.getId(), s.getStationName(), s.getStationLatitude(), s.getStationLongitude(),
                                 w.get().getTemperature(), w.get().getWindspeed(), w.get().getPressure()));
-            } else if (t.isPresent()) {
+            } else {
                 processedData.add(
-                        new ProcessedRecord(index++, s.getType(), s.getActionTime(), s.getId(), s.getStationName(),
-                                s.getStationLatitude(), s.getStationLongitude(), s.getBikeId(), s.getCurrentBikeCount(),
-                                s.getInitialBikeCount(), t.get().getUserType(), t.get().getBirthYear(), t.get().getGender(),
-                                0.0, 0.0,0.0));
+                        new ProcessedRecord(demand, s.getId(), s.getStationName(), s.getStationLatitude(), s.getStationLongitude(),
+                                0.0, 0.0, 0.0));
             }
         }
 
         return processedData;
     }
 
+    private String trimDate(String date) {
+        return date.substring(0, 10);
+    }
+
+    private Date parseDate(String date) {
+        return new DateTime(date).toDate();
+    }
+
     private Optional<Weather> getWeatherByDate(PredictionData predictionData, Station s) {
         return predictionData.getWeathers().stream()
                 .filter(w -> w.getDate().equals(s.getActionTime().substring(0, 10)))
-                .findFirst();
-    }
-
-    private Optional<Trip> getTripForStation(Station station, List<Trip> trips) {
-        return station.getType() == 0 ? getDepartureTrip(station, trips)
-                : getArrivalTrip(station, trips);
-    }
-
-    private Optional<Trip> getArrivalTrip(Station station, List<Trip> trips) {
-        return trips.stream()
-                .filter(trip -> trip.getEndTime().equals(station.getActionTime()))
-                .filter(trip -> trip.getEndStationId() == station.getId())
-                .findFirst();
-    }
-
-    private Optional<Trip> getDepartureTrip(Station station, List<Trip> trips) {
-        return trips.stream()
-                .filter(trip -> trip.getStartTime().equals(station.getActionTime()))
-                .filter(trip -> trip.getStartStationId() == station.getId())
                 .findFirst();
     }
 }

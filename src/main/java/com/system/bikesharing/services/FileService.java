@@ -77,7 +77,7 @@ public class FileService {
         return dateTimeFormatter.parseDateTime(date).plusDays(1).minusMillis(1).toDate();
     }
 
-    private Date parseDate(String date) {
+    public static Date parseDate(String date) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(DATE_PATTERN);
         return dateTimeFormatter.parseDateTime(removeLastZero(date)).toDate();
     }

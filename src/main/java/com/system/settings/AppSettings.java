@@ -22,14 +22,10 @@ public class AppSettings {
     public static String stationsPath;
     public static String tripsPath;
 
-    public static int trainDataRatio;
-    public static int testDataRatio;
-
-    public static int bestK;
-
-    public static String classifierPath;
-
     public static boolean generateFlag;
+
+    public static int startDay;
+    public static int endDay;
 
     /**
      * Reads configuration file
@@ -48,11 +44,10 @@ public class AppSettings {
         databasePort = conf.getInt("database.port");
         stationsPath = replaceFileSeparator(conf.getString("file-path.stations"));
         tripsPath = replaceFileSeparator(conf.getString("file-path.trips"));
-        trainDataRatio = conf.getInt("classification.train-data-ratio");
-        testDataRatio = conf.getInt("classification.test-data-ratio");
-        bestK = conf.getInt("classification.bestK");
-        classifierPath = replaceFileSeparator(conf.getString("classification.classifierPath"));
         generateFlag = conf.getBoolean("option.generate");
+        startDay = conf.getInt("regression.start-day-period");
+        endDay = conf.getInt("regression.end-day-period");
+
     }
 
     private static String replaceFileSeparator(String path) {

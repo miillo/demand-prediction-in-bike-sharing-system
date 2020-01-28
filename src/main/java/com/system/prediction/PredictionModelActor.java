@@ -36,28 +36,13 @@ public class PredictionModelActor extends AbstractLoggingActor {
         }
     }
 
-    public static final class PredictDemandWithModel {
-        public final String jobUUID;
-        public final List<ProcessedRecord> processedRecords;
-
-        public PredictDemandWithModel(String jobUUID, List<ProcessedRecord> processedRecords) {
-            this.jobUUID = jobUUID;
-            this.processedRecords = processedRecords;
-        }
-    }
-
     @Override
     public Receive createReceive() {
         return receiveBuilder()
                 .match(PredictDemand.class, msg -> {
                     System.out.println("PredictionModelActor received data with job ID: " + msg.jobUUID);
                     predictionModelService.createTrainTestData(msg.processedRecords);
-                    predictionModelService.train();
-                    predictionModelService.saveClassifier();
-                })
-                .match(PredictDemandWithModel.class, msg -> {
-                    System.out.println("PredictionModelActor received data with job ID: " + msg.jobUUID);
-                    predictionModelService.predict(msg.processedRecords);
+                    predictionModelService.compute();
                 })
                 .build();
     }
