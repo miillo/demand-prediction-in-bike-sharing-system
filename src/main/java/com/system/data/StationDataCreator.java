@@ -15,10 +15,13 @@ import static java.util.stream.Collectors.toMap;
 
 public final class StationDataCreator {
 
-    private static final String CSV_FILE = "/home/michal/Downloads/tripdata.csv";
-    private static final String STATIONS_DATA_CSV = "stations_data.csv";
+    // /home/michal/Downloads/tripdata.csv
+    // D:\Coding\Java\demand-prediction-in-bike-sharing-system
+    private static final String CSV_FILE = "D:\\Coding\\Java\\demand-prediction-in-bike-sharing-system\\JC-201909-citibike-tripdata.csv";
+//    private static final String STATIONS_DATA_CSV = "stations_data.csv";
+    private static final String STATIONS_DATA_CSV = "D:\\Coding\\Java\\stations_data.csv";
 
-    static void run() {
+    public static void run() {
         try {
             Map<String, Map<Date, Integer>> stationTimeTypeMap = getDataForEachStationWithTimeAndTypeOfAction();
             Map<String, Map<Date, Integer>> sortedTimeTypeMapMap = sortDataForEachStationByTime(stationTimeTypeMap);
@@ -38,6 +41,7 @@ public final class StationDataCreator {
         reader.readNext();
         String[] line;
         while ((line = reader.readNext()) != null) {
+            System.out.println();
             readDeparture(stationMap, line);
             readArrival(stationMap, line);
         }

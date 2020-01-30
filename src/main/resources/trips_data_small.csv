@@ -1,5 +1,5 @@
 tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station latitude,end station longitude,bikeid,usertype,birth year,gender
-145,2019-09-01 00:00:37.6920,2019-09-01 00:03:03.0100,3640,Journal Square,40.73367,-74.0625,3206,Hilltop,40.7311689,-74.0575736,29303,Subscriber,1991,1
+145,2019-09-01 00:00:37.6920,2019-09-01 00:03:03.0100,72502,Journal Square,40.73367,-74.0625,3206,Hilltop,40.7311689,-74.0575736,29303,Subscriber,1991,1
 212,2019-09-01 00:03:00.6000,2019-09-01 00:06:33.3420,3194,McGinley Square,40.7253399253558,-74.0676221251488,3679,Bergen Ave,40.722103786686,-74.0714550018311,29297,Subscriber,1993,2
 569,2019-09-01 00:07:13.0020,2019-09-01 00:16:42.8610,3214,Essex Light Rail,40.7127742,-74.0364857,3184,Paulus Hook,40.7141454,-74.0335519,29435,Customer,1977,1
 1380,2019-09-01 00:07:25.3350,2019-09-01 00:30:26.1640,3214,Essex Light Rail,40.7127742,-74.0364857,3792,Columbus Dr at Exchange Pl,40.71687,-74.03281,29509,Subscriber,1965,1

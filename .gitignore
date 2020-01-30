@@ -26,3 +26,4 @@ hs_err_pid*
 .gradle/
 build/
 java_pid2116.hprof
+JC-201909-citibike-tripdata.csv

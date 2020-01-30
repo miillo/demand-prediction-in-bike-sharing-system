@@ -1,6 +1,8 @@
 package com.system.prediction.services;
 
 import com.system.pojo.ProcessedRecord;
+import com.system.settings.AppSettings;
+import org.joda.time.DateTime;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -10,6 +12,7 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToNominal;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class PredictionModelService {
@@ -27,7 +30,7 @@ public class PredictionModelService {
         this.trainingSet.setClassIndex(0);
     }
 
-    public void compute() throws Exception {
+    public Instances initialComputation() throws Exception {
         trainingSet = filterString(trainingSet);
         LinearRegression model = new LinearRegression();
         model.buildClassifier(trainingSet);
@@ -35,7 +38,47 @@ public class PredictionModelService {
         Instance testInstance = trainingSet.instance(0);
         testInstance.setValue(0, 0);
         double predictedDemand = model.classifyInstance(testInstance);
-        System.out.println("Predicted demand: " + predictedDemand);
+//        System.out.println("Predicted demand: " + predictedDemand);
+
+        Instances newSet = new Instances("", atts, AppSettings.endDay - AppSettings.startDay + 1);
+        Enumeration<Instance> enumerateInstances = trainingSet.enumerateInstances();
+        enumerateInstances.nextElement();
+        while(enumerateInstances.hasMoreElements()) {
+            newSet.add(enumerateInstances.nextElement());
+        }
+        newSet.add(testInstance);
+        return newSet;
+    }
+
+    public Instances compute(Instances newInstances) throws Exception {
+        newInstances.setClassIndex(0);
+        trainingSet = filterString(newInstances);
+        LinearRegression model = new LinearRegression();
+        model.buildClassifier(trainingSet);
+
+        Instance testInstance = trainingSet.instance(0);
+        testInstance.setValue(0, 0);
+        double predictedDemand = model.classifyInstance(testInstance);
+//        System.out.println("Predicted demand: " + predictedDemand);
+
+        Instances newSet = new Instances("", atts, AppSettings.endDay - AppSettings.startDay + 1);
+        Enumeration<Instance> enumerateInstances = trainingSet.enumerateInstances();
+        enumerateInstances.nextElement();
+        while(enumerateInstances.hasMoreElements()) {
+            newSet.add(enumerateInstances.nextElement());
+        }
+        newSet.add(testInstance);
+        return newSet;
+    }
+
+    public void predict(DateTime dateTime) throws Exception {
+        LinearRegression model = new LinearRegression();
+        model.buildClassifier(trainingSet);
+
+        Instance testInstance = trainingSet.instance(0);
+        testInstance.setValue(0, 0);
+        double predictedDemand = model.classifyInstance(testInstance);
+        System.out.println("Predicted demand: " + predictedDemand + " for date: " + dateTime.toString());
     }
 
     private static Instances filterString(Instances input) throws Exception {

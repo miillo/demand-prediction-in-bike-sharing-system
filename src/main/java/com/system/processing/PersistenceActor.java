@@ -82,8 +82,8 @@ public class PersistenceActor extends AbstractLoggingActor {
                             .forEach(weather -> mongoOperations.save(weather, Collections.WEATHERS.name()));
                     msg.predictionData.setWeathers(msg.predictionData.getWeatherAPI().getWeathersByDay());
 
-                    String jobUUID = UUID.randomUUID().toString();
-                    getContext().getParent().tell(new GetCollectedData(jobUUID, msg.predictionData), self());
+//                    String jobUUID = UUID.randomUUID().toString();
+                    getContext().getParent().tell(new GetCollectedData(msg.jobUUID, msg.predictionData), self());
                 })
                 .match(GetCollectedDataforStation.class, msg -> {
                     PredictionData data = new PredictionData();
@@ -95,7 +95,7 @@ public class PersistenceActor extends AbstractLoggingActor {
                     data.setWeathers(mongoOperations.findAll(Weather.class, Collections.WEATHERS.name()));
 
                     String jobUUID = UUID.randomUUID().toString();
-                    getContext().getParent().tell(new GetCollectedData(jobUUID, data), self());
+                    getContext().getParent().tell(new GetCollectedData(msg.jobUUID, data), self());
                 })
                 .build();
     }

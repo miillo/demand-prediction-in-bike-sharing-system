@@ -57,7 +57,7 @@ public class WeatherService {
      * @return request URL
      */
     private String createRequestURL(UserRequest userRequest) {
-        return WEATHER_URL + "station=" + userRequest.getStationId() + "&" + "start=" + userRequest.getStartDate() +
+        return WEATHER_URL + "station=" + "72502" + "&" + "start=" + userRequest.getStartDate() +
                 "&" + "end=" + userRequest.getEndDate() + "&" + "key=" + API_KEY;
     }
 }

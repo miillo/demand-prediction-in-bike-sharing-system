@@ -93,4 +93,18 @@ public class ProcessedRecord {
     public void setPressure(Double pressure) {
         this.pressure = pressure;
     }
+
+    @Override
+    public String toString() {
+        return "ProcessedRecord{" +
+                "demand=" + demand +
+                ", stationId=" + stationId +
+                ", stationName='" + stationName + '\'' +
+                ", stationLatitude='" + stationLatitude + '\'' +
+                ", stationLongitude='" + stationLongitude + '\'' +
+                ", temperature=" + temperature +
+                ", windspeed=" + windspeed +
+                ", pressure=" + pressure +
+                '}';
+    }
 }

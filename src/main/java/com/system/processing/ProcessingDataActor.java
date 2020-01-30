@@ -1,6 +1,7 @@
 package com.system.processing;
 
 import akka.actor.AbstractLoggingActor;
+import akka.actor.Actor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import com.system.bikesharing.stationdata.StationDataActorRouter;
@@ -11,12 +12,13 @@ import com.system.prediction.PredictionModelActor;
 import com.system.processing.services.ProcessingDataService;
 import com.system.settings.AppSettings;
 import com.system.weatherdata.WeatherDataActorRouter;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import weka.core.Instances;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ProcessingDataActor extends AbstractLoggingActor {
     private final String processingDataActorId;
@@ -25,13 +27,19 @@ public class ProcessingDataActor extends AbstractLoggingActor {
     private final ProcessingDataService processingDataService;
     private int stationId;
 
+    private Map<String, UserRequest> jobUuidUserRequest;
+    private final int PREDICTION_KIDS = 20; //todo do application.conf
+    private int predCreationCounter = 0;
+    private Map<String, ActorRef> datePredActorMap; // data - aktor ktory ja trzyma
 
     public ProcessingDataActor(String processingDataActorId) {
         log().info("ProcessingDataActor {} created", processingDataActorId);
         this.processingDataActorId = processingDataActorId;
+        this.jobUuidUserRequest = new HashMap<>();
         this.predictionDataMap = new HashMap<>();
         this.processingDataService = new ProcessingDataService();
         this.actorRefMap = createChildActors();
+        this.datePredActorMap = new HashMap<>();
     }
 
     static Props props(String processingDataActorId) {
@@ -44,6 +52,14 @@ public class ProcessingDataActor extends AbstractLoggingActor {
 
         public HandleUserRequest(UserRequest userRequest) {
             this.userRequest = userRequest;
+        }
+    }
+
+    public static final class HandlePredictionRequest {
+        final PredRequest predRequest;
+
+        public HandlePredictionRequest(PredRequest predRequest) {
+            this.predRequest = predRequest;
         }
     }
 
@@ -77,6 +93,16 @@ public class ProcessingDataActor extends AbstractLoggingActor {
         }
     }
 
+    public static final class InstancesData {
+        public final Instances instances;
+        public final DateTime date;
+
+        public InstancesData(Instances instances, DateTime date) {
+            this.instances = instances;
+            this.date = date;
+        }
+    }
+
     @Override
     public void preStart() throws Exception {
         super.preStart();
@@ -87,6 +113,7 @@ public class ProcessingDataActor extends AbstractLoggingActor {
         return receiveBuilder()
                 .match(HandleUserRequest.class, msg -> {
                     String jobUUID = UUID.randomUUID().toString();
+                    this.jobUuidUserRequest.put(jobUUID, msg.userRequest);
                     this.stationId = Integer.parseInt(msg.userRequest.getStationId());
 
                     if (AppSettings.generateFlag) {
@@ -129,8 +156,49 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     }
                 })
                 .match(PersistenceActor.GetCollectedData.class, msg -> {
+                    //todo to wykonywane tylko raz na endpoint request-pred
+
                     List<ProcessedRecord> processedRecords = processingDataService.prepareDataForStation(msg.predictionData, stationId);
-                    actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.PredictDemand(msg.jobUUID, processedRecords), self());
+
+                    if (predCreationCounter != 0) {
+                        System.out.println("@@@@@@@@@@@@@@@@@@@@@ PREDCREATIONCOUNTER != 0 @@@@@@@@@@@@@@@@@@@@@@");
+                        System.exit(1);
+                    }
+
+                    UserRequest userRequest = jobUuidUserRequest.get(msg.jobUUID);
+
+                    ActorRef predictionModelActor = getContext().actorOf(Props.create(PredictionModelActor.class, "0"), "PredictionModelActor" + predCreationCounter);
+
+                    System.out.println(userRequest);
+                    DateTime dateTime = parseRequestStartDate(userRequest.getStartDate());
+
+                    predictionModelActor.tell(new PredictionModelActor.InitPrediction(msg.jobUUID, processedRecords, dateTime), self());
+                    datePredActorMap.put(dateTime.toString(), predictionModelActor);
+                    predCreationCounter++;
+
+//                    actorRefMap.get("predictionModelActor").tell(new PredictionModelActor.InitPrediction(msg.jobUUID, processedRecords, userRequest.getStartDate()), self());
+                })
+                .match(InstancesData.class, msg -> {
+                    if (predCreationCounter == PREDICTION_KIDS) {
+                        System.out.println("@@@@@@@@@@ PREDICTION KIDS CREATED @@@@@@@@@@");
+                        return;
+                    }
+
+                    ActorRef predictionModelActor = getContext().actorOf(Props.create(PredictionModelActor.class, "0"), "PredictionModelActor" + predCreationCounter);
+                    predictionModelActor.tell(new PredictionModelActor.NextPrediction(msg.instances, msg.date), self());
+                    datePredActorMap.put(msg.date.toString(), predictionModelActor);
+                    predCreationCounter++;
+                })
+                .match(HandlePredictionRequest.class, msg -> {
+                    DateTime dateTime = parseRequestStartDate(msg.predRequest.getPredDate());
+                    ActorRef predActor = datePredActorMap.get(dateTime.toString());
+                    if (predActor == null) {
+                        System.out.println("!!!!!!!!!!!!!!!!!! PRED DATE NOE AVAILABLE !!!!!!!!!!!!!");
+                        return;
+                    }
+
+
+
                 })
                 .build();
     }
@@ -150,7 +218,7 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                 .actorOf(Props.create(WeatherDataActorRouter.class, "0"), "weatherGeoActorRouter");
 
         ActorRef persistenceActor = getContext().actorOf(Props.create(PersistenceActor.class, "0"), "PersistenceActor");
-        ActorRef predictionModelActor = getContext().actorOf(Props.create(PredictionModelActor.class, "0"), "PredictionModelActor");
+        ActorRef predictionModelActor = getContext().actorOf(Props.create(PredictionModelActor.class, "0"), "PredictionModelActor");    //todo do usuniecia
 
         return new HashMap<String, ActorRef>() {{
             put("tripDataActorRouter", tripDataActorRouter);
@@ -161,4 +229,10 @@ public class ProcessingDataActor extends AbstractLoggingActor {
         }};
     }
 
+
+    private DateTime parseRequestStartDate(String date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+        Date date1 = dateTimeFormatter.parseDateTime(date).toDate();
+        return new DateTime(date1);
+    }
 }

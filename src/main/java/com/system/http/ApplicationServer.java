@@ -15,6 +15,7 @@ import akka.http.javadsl.server.AllDirectives;
 import akka.http.javadsl.server.Route;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
+import com.system.pojo.PredRequest;
 import com.system.pojo.UserRequest;
 import com.system.processing.ProcessingDataActor;
 import com.system.settings.AppSettings;
@@ -46,6 +47,9 @@ public class ApplicationServer extends AllDirectives {
                 path(AppSettings.httpEndpoint, () ->
                         post(() ->
                                 entity(Jackson.unmarshaller(UserRequest.class), this::handlePredictionRequest))
+                ),
+                path("predict", () ->
+                    post(() -> entity(Jackson.unmarshaller(PredRequest.class), this::handleUserPredRequest))
                 ));
     }
 
@@ -63,6 +67,21 @@ public class ApplicationServer extends AllDirectives {
     private Route handlePredictionRequest(UserRequest userRequest) {
         log.info("Application has received user request: " + userRequest.toString());
         processingDataActor.tell(new ProcessingDataActor.HandleUserRequest(userRequest), ActorRef.noSender());
+        return complete("Thank you for request");
+    }
+
+    /**
+     *      * {
+     *      * "station-id": "XXXXX"
+     *      * "pred-date": "yyyy-mm-dd"
+     *      * }
+     *
+     * @param predRequest
+     * @return
+     */
+    private Route handleUserPredRequest(PredRequest predRequest) {
+        log.info("Application has received user prediction request: " + predRequest.toString());
+        processingDataActor.tell(new ProcessingDataActor.HandlePredictionRequest(predRequest), ActorRef.noSender());
         return complete("Thank you for request");
     }
 

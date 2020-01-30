@@ -2,6 +2,7 @@ package com.system.pojo;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.internal.$Gson$Preconditions;
 
 public class UserRequest {
     final String stationId;

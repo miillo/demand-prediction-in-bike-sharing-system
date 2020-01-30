@@ -18,7 +18,6 @@ public class ProcessingDataService {
         List<Station> stations = predictionData.getStations().stream()
                 .filter(station -> station.getId() == stationId)
                 .collect(Collectors.toList());
-
         return prepareProcessedRecords(predictionData, stations);
     }
 
@@ -31,7 +30,13 @@ public class ProcessingDataService {
         stations.forEach(s -> s.setActionTime(trimDate(s.getActionTime())));
 
         Map<String, Map<Integer, List<Station>>> dateMapTypeMap = stations.stream()
-                .filter(station -> parseDate(station.getActionTime()).after(startDate) && parseDate(station.getActionTime()).before(endDate))
+                .filter(station -> {
+
+                   return parseDate(station.getActionTime()).equals(startDate) ||
+                            (parseDate(station.getActionTime()).after(startDate) && parseDate(station.getActionTime()).before(endDate));
+
+//                    return !(parseDate(station.getActionTime()).after(startDate) && parseDate(station.getActionTime()).before(endDate));
+                })
                 .collect(groupingBy(Station::getActionTime, groupingBy(Station::getType)));
 
         for (String d : dateMapTypeMap.keySet()) {

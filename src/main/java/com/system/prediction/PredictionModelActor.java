@@ -4,12 +4,20 @@ import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
 import com.system.pojo.ProcessedRecord;
 import com.system.prediction.services.PredictionModelService;
+import com.system.processing.ProcessingDataActor;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import weka.core.Instances;
 
+import java.util.Date;
 import java.util.List;
 
 public class PredictionModelActor extends AbstractLoggingActor {
     private final String predictionModelActorId;
     private final PredictionModelService predictionModelService;
+
+    private DateTime actorDate;
 
     public PredictionModelActor(String predictionModelActorId) {
         log().info("PredictionModelActor {} created", predictionModelActorId);
@@ -26,23 +34,50 @@ public class PredictionModelActor extends AbstractLoggingActor {
         super.preStart();
     }
 
-    public static final class PredictDemand {
+    public static final class InitPrediction {
         public final String jobUUID;
         public final List<ProcessedRecord> processedRecords;
+        public final DateTime date;
 
-        public PredictDemand(String jobUUID, List<ProcessedRecord> processedRecords) {
+        public InitPrediction(String jobUUID, List<ProcessedRecord> processedRecords, DateTime date) {
             this.jobUUID = jobUUID;
             this.processedRecords = processedRecords;
+            this.date = date;
         }
     }
+
+    public static final class NextPrediction {
+        public final Instances instances;
+        public final DateTime dateTime;
+
+        public NextPrediction(Instances instances, DateTime dateTime) {
+            this.instances = instances;
+            this.dateTime = dateTime;
+        }
+    }
+
+    public static final class ReturnPrediction {}
 
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(PredictDemand.class, msg -> {
-                    System.out.println("PredictionModelActor received data with job ID: " + msg.jobUUID);
+                .match(InitPrediction.class, msg -> {
+                    this.actorDate = msg.date;
+                    System.out.println("PredictionModelActor received INIT MESSAGE with job ID: " + msg.jobUUID);
                     predictionModelService.createTrainTestData(msg.processedRecords);
-                    predictionModelService.compute();
+                    Instances computedInstances = predictionModelService.initialComputation();
+
+                    //todo wysylanie podniesionej daty o 1 i instances z compute
+                    getContext().getParent().tell(new ProcessingDataActor.InstancesData(computedInstances, actorDate.plusDays(1)), getSelf());
+                })
+                .match(NextPrediction.class, msg -> {
+                    this.actorDate = msg.dateTime;
+                    Instances compute = predictionModelService.compute(msg.instances);
+                    getContext().getParent().tell(new ProcessingDataActor.InstancesData(compute, actorDate.plusDays(1)), getSelf());
+                })
+                //todo msg ktory zwroci predykcje dla daty
+                .match(ReturnPrediction.class, msg -> {
+                    predictionModelService.predict(this.actorDate);
                 })
                 .build();
     }
