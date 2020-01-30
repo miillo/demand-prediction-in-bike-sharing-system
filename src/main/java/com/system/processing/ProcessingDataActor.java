@@ -197,7 +197,7 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                         return;
                     }
 
-
+                    predActor.tell(new PredictionModelActor.ReturnPrediction(), self());
 
                 })
                 .build();

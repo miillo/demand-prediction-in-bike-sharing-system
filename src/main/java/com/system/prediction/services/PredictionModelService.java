@@ -52,7 +52,8 @@ public class PredictionModelService {
 
     public Instances compute(Instances newInstances) throws Exception {
         newInstances.setClassIndex(0);
-        trainingSet = filterString(newInstances);
+//        trainingSet = filterString(newInstances);
+        trainingSet = newInstances;
         LinearRegression model = new LinearRegression();
         model.buildClassifier(trainingSet);
 
