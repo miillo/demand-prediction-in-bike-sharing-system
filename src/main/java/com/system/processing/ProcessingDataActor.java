@@ -1,7 +1,6 @@
 package com.system.processing;
 
 import akka.actor.AbstractLoggingActor;
-import akka.actor.Actor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import com.system.bikesharing.stationdata.StationDataActorRouter;
@@ -12,12 +11,12 @@ import com.system.prediction.PredictionModelActor;
 import com.system.processing.services.ProcessingDataService;
 import com.system.settings.AppSettings;
 import com.system.weatherdata.WeatherDataActorRouter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import weka.core.Instances;
 
-import java.io.File;
 import java.util.*;
 
 public class ProcessingDataActor extends AbstractLoggingActor {
@@ -83,6 +82,14 @@ public class ProcessingDataActor extends AbstractLoggingActor {
         }
     }
 
+    public static final class StationsDataById {
+        public final List<Station> stations;
+
+        public StationsDataById(List<Station> stations) {
+            this.stations = stations;
+        }
+    }
+
     public static final class TripsData {
         public final List<Trip> trips;
         public final String jobUUID;
@@ -122,7 +129,7 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                         actorRefMap.get("stationDataActorRouter").tell(new StationDataActorRouter.DownloadStationsData(msg.userRequest, jobUUID), getSelf());
                         actorRefMap.get("tripDataActorRouter").tell(new TripDataActorRouter.DownloadTripsData(msg.userRequest, jobUUID), getSelf());
                     } else {
-                        actorRefMap.get("persistenceActor").tell(new PersistenceActor.GetCollectedDataforStation(jobUUID, stationId), self());
+                        actorRefMap.get("persistenceActor").tell(new PersistenceActor.GetCollectedDataForStation(jobUUID, stationId), self());
                     }
                 })
                 .match(WeatherApiData.class, msg -> {
@@ -198,7 +205,12 @@ public class ProcessingDataActor extends AbstractLoggingActor {
                     }
 
                     predActor.tell(new PredictionModelActor.ReturnPrediction(), self());
-
+                    actorRefMap.get("persistenceActor").tell(new PersistenceActor.GetStationsDataById(stationId), self());
+                })
+                .match(StationsDataById.class, msg -> {
+                    List<Station> stations = msg.stations;
+                    List<Integer> realDemand = processingDataService.computeRealDemand(stations);
+                    realDemand.forEach(System.out::println);
                 })
                 .build();
     }

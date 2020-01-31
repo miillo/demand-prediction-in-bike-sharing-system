@@ -6,11 +6,8 @@ import com.system.pojo.ProcessedRecord;
 import com.system.prediction.services.PredictionModelService;
 import com.system.processing.ProcessingDataActor;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import weka.core.Instances;
 
-import java.util.Date;
 import java.util.List;
 
 public class PredictionModelActor extends AbstractLoggingActor {
@@ -56,7 +53,8 @@ public class PredictionModelActor extends AbstractLoggingActor {
         }
     }
 
-    public static final class ReturnPrediction {}
+    public static final class ReturnPrediction {
+    }
 
     @Override
     public Receive createReceive() {
@@ -67,7 +65,6 @@ public class PredictionModelActor extends AbstractLoggingActor {
                     predictionModelService.createTrainTestData(msg.processedRecords);
                     Instances computedInstances = predictionModelService.initialComputation();
 
-                    //todo wysylanie podniesionej daty o 1 i instances z compute
                     getContext().getParent().tell(new ProcessingDataActor.InstancesData(computedInstances, actorDate.plusDays(1)), getSelf());
                 })
                 .match(NextPrediction.class, msg -> {
@@ -75,7 +72,6 @@ public class PredictionModelActor extends AbstractLoggingActor {
                     Instances compute = predictionModelService.compute(msg.instances);
                     getContext().getParent().tell(new ProcessingDataActor.InstancesData(compute, actorDate.plusDays(1)), getSelf());
                 })
-                //todo msg ktory zwroci predykcje dla daty
                 .match(ReturnPrediction.class, msg -> {
                     predictionModelService.predict(this.actorDate);
                 })

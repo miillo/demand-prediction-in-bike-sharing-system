@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.UUID;
+import java.util.List;
 
 public class PersistenceActor extends AbstractLoggingActor {
     private final String persistenceActorId;
@@ -56,15 +56,22 @@ public class PersistenceActor extends AbstractLoggingActor {
 
     }
 
-    public static final class GetCollectedDataforStation {
+    public static final class GetCollectedDataForStation {
         public final String jobUUID;
         public final int stationId;
 
-        public GetCollectedDataforStation(String jobUUID, int stationId) {
+        public GetCollectedDataForStation(String jobUUID, int stationId) {
             this.jobUUID = jobUUID;
             this.stationId = stationId;
         }
+    }
 
+    public static final class GetStationsDataById {
+        public final int stationId;
+
+        public GetStationsDataById(int stationId) {
+            this.stationId = stationId;
+        }
     }
 
     @Override
@@ -82,10 +89,9 @@ public class PersistenceActor extends AbstractLoggingActor {
                             .forEach(weather -> mongoOperations.save(weather, Collections.WEATHERS.name()));
                     msg.predictionData.setWeathers(msg.predictionData.getWeatherAPI().getWeathersByDay());
 
-//                    String jobUUID = UUID.randomUUID().toString();
                     getContext().getParent().tell(new GetCollectedData(msg.jobUUID, msg.predictionData), self());
                 })
-                .match(GetCollectedDataforStation.class, msg -> {
+                .match(GetCollectedDataForStation.class, msg -> {
                     PredictionData data = new PredictionData();
 
                     data.setStations(mongoOperations.find(new Query().addCriteria(Criteria.where("stationId").is(msg.stationId)),
@@ -94,8 +100,12 @@ public class PersistenceActor extends AbstractLoggingActor {
                             .orOperator(Criteria.where("endStationId").is(msg.stationId))), Trip.class, Collections.TRIPS.name()));
                     data.setWeathers(mongoOperations.findAll(Weather.class, Collections.WEATHERS.name()));
 
-                    String jobUUID = UUID.randomUUID().toString();
                     getContext().getParent().tell(new GetCollectedData(msg.jobUUID, data), self());
+                })
+                .match(GetStationsDataById.class, msg -> {
+                    List<Station> stations = mongoOperations.find(new Query().addCriteria(Criteria.where("stationId").is(msg.stationId)),
+                            Station.class, Collections.STATIONS.name());
+                    getContext().getParent().tell(new ProcessingDataActor.StationsDataById(stations), self());
                 })
                 .build();
     }

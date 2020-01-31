@@ -5,6 +5,8 @@ import com.system.pojo.ProcessedRecord;
 import com.system.pojo.Station;
 import com.system.pojo.weather.Weather;
 import com.system.settings.AppSettings;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 
 import java.util.*;
@@ -30,13 +32,8 @@ public class ProcessingDataService {
         stations.forEach(s -> s.setActionTime(trimDate(s.getActionTime())));
 
         Map<String, Map<Integer, List<Station>>> dateMapTypeMap = stations.stream()
-                .filter(station -> {
-
-                   return parseDate(station.getActionTime()).equals(startDate) ||
-                            (parseDate(station.getActionTime()).after(startDate) && parseDate(station.getActionTime()).before(endDate));
-
-//                    return !(parseDate(station.getActionTime()).after(startDate) && parseDate(station.getActionTime()).before(endDate));
-                })
+                .filter(station -> parseDate(station.getActionTime()).equals(startDate) ||
+                            (parseDate(station.getActionTime()).after(startDate) && parseDate(station.getActionTime()).before(endDate)))
                 .collect(groupingBy(Station::getActionTime, groupingBy(Station::getType)));
 
         for (String d : dateMapTypeMap.keySet()) {
@@ -56,6 +53,22 @@ public class ProcessingDataService {
         }
 
         return processedData;
+    }
+
+    public List<Integer> computeRealDemand(List<Station> stations) {
+        stations.forEach(s -> s.setActionTime(trimDate(s.getActionTime())));
+
+        Map<String, Map<Integer, List<Station>>> dateMapTypeMap = stations.stream()
+                .collect(groupingBy(Station::getActionTime, groupingBy(Station::getType)));
+
+        List<Integer> realDemandList = new ArrayList<>();
+
+        for (String d : dateMapTypeMap.keySet()) {
+            Map<Integer, List<Station>> m = dateMapTypeMap.get(d);
+            int demand = m.get(0).size() - m.get(1).size();
+            realDemandList.add(demand);
+        }
+        return realDemandList;
     }
 
     private String trimDate(String date) {
